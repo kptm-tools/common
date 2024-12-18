@@ -1,6 +1,6 @@
 package events
 
-import "github.com/kptm-tools/common/common/results"
+import "github.com/kptm-tools/common/pkg/results"
 
 // ScanStartedEvent represents the payload for a scan initiation event.
 // This event signals that a scan has begun for a specific target.
