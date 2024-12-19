@@ -1,6 +1,6 @@
 module github.com/kptm-tools/common
 
-go 1.23.3
+go 1.23
 
 require github.com/likexian/whois-parser v1.24.20
 
