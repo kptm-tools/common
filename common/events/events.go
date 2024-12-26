@@ -40,3 +40,17 @@ type WhoIsEvent struct {
 	// Timestamp is the Unix timestamp when the scan started
 	Timestamp int64 `json:"timestamp"`
 }
+
+// TheHarvesterEvent represents the payload of a Harvester operation.
+// This event provides details on publicly available information of the target
+// such as emails and subdomains
+type TheHarvesterEvent struct {
+	// ScanID is the unique identifier of the scan associated with this event.
+	ScanID string `json:"scan_id"`
+
+	// TargetResult contains the WhoIs lookup results for the target.
+	TargetResult results.TargetResult `json:"target_result"`
+
+	// Timestamp is the Unix timestamp when the scan started
+	Timestamp int64 `json:"timestamp"`
+}
