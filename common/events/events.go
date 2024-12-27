@@ -16,7 +16,7 @@ type ScanStartedEvent struct {
 }
 
 // DNSLookupEvent represents the payload of a DNSLookup operation.
-// This event provides details about the DNS information gathered for a target.
+// This event provides details about the DNS information gathered for scan targets.
 type DNSLookupEvent struct {
 	// ScanID is the unique identifier of the scan associated with this event.
 	ScanID string `json:"scan_id"`
@@ -29,7 +29,7 @@ type DNSLookupEvent struct {
 }
 
 // WhoIsEvent represents the payload of a WhoIs lookup operation.
-// This event provides details about the WhoIs information gathered for a target.
+// This event provides details about the WhoIs information gathered for scan targets.
 type WhoIsEvent struct {
 	// ScanID is the unique identifier of the scan associated with this event.
 	ScanID string `json:"scan_id"`
@@ -41,10 +41,9 @@ type WhoIsEvent struct {
 	Timestamp int64 `json:"timestamp"`
 }
 
-// TheHarvesterEvent represents the payload of a Harvester operation.
-// This event provides details on publicly available information of the target
-// such as emails and subdomains
-type TheHarvesterEvent struct {
+// HarvesterEvent represents the payload of a Harvester scan operation.
+// This event provides details about the Harvester information gathered for scan targets.
+type HarvesterEvent struct {
 	// ScanID is the unique identifier of the scan associated with this event.
 	ScanID string `json:"scan_id"`
 
