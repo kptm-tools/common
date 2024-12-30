@@ -9,7 +9,7 @@ type ScanStartedEvent struct {
 	ScanID string `json:"scan_id"`
 
 	// Target is the domain or IP being scanned
-	Target string `json:"target"`
+	Targets []string `json:"target"`
 
 	// Timestamp is the Unix timestamp when the scan started
 	Timestamp int64 `json:"timestamp"`
