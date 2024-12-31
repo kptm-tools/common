@@ -5,16 +5,6 @@ import (
 	"fmt"
 )
 
-// ScanResult represents the result of a scan operation.
-// It contains the scan's unique ID and a collection of target-specific results.
-type ScanResult struct {
-	// ScanID is the unique identifier of the scan.
-	ScanID string `json:"scan_id"`
-
-	// Targets contains the results for each target included in the scan.
-	Targets []TargetResult `json:"targets"`
-}
-
 // TargetResult represents the scan result for a specific target.
 // It includes the target identifier and any data gathered during the scan.
 type TargetResult struct {
