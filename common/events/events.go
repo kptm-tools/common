@@ -21,8 +21,8 @@ type DNSLookupEvent struct {
 	// ScanID is the unique identifier of the scan associated with this event.
 	ScanID string `json:"scan_id"`
 
-	// TargetResult contains the DNS lookup results for the target.
-	TargetResult results.TargetResult `json:"target_result"`
+	// Results contains the DNS lookup results for the target.
+	Result []results.TargetResult `json:"results"`
 
 	// Timestamp is the Unix timestamp when the scan started
 	Timestamp int64 `json:"timestamp"`
@@ -34,8 +34,8 @@ type WhoIsEvent struct {
 	// ScanID is the unique identifier of the scan associated with this event.
 	ScanID string `json:"scan_id"`
 
-	// TargetResult contains the WhoIs lookup results for the target.
-	TargetResult results.TargetResult `json:"target_result"`
+	// Results contains the WhoIs lookup results for the target.
+	Results []results.TargetResult `json:"results"`
 
 	// Timestamp is the Unix timestamp when the scan started
 	Timestamp int64 `json:"timestamp"`
@@ -48,7 +48,7 @@ type HarvesterEvent struct {
 	ScanID string `json:"scan_id"`
 
 	// TargetResult contains the WhoIs lookup results for the target.
-	TargetResult results.TargetResult `json:"target_result"`
+	Results []results.TargetResult `json:"results"`
 
 	// Timestamp is the Unix timestamp when the scan started
 	Timestamp int64 `json:"timestamp"`
