@@ -53,3 +53,16 @@ type HarvesterEvent struct {
 	// Timestamp is the Unix timestamp when the scan started
 	Timestamp int64 `json:"timestamp"`
 }
+
+// NmapEvent represents the payload of a Harvester scan operation.
+// This event provides details about the Harvester information gathered for scan targets.
+type NmapEvent struct {
+	// ScanID is the unique identifier of the scan associated with this event.
+	ScanID string `json:"scan_id"`
+
+	// TargetResult contains the WhoIs lookup results for the target.
+	Results []results.TargetResult `json:"results"`
+
+	// Timestamp is the Unix timestamp when the scan started
+	Timestamp int64 `json:"timestamp"`
+}
