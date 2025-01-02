@@ -89,3 +89,23 @@ type NmapEvent struct {
 	// Timestamp is the Unix timestamp when the scan started
 	Timestamp int64 `json:"timestamp"`
 }
+
+func (e *ScanStartedEvent) GetDomainValues() []string {
+	domains := make([]string, 0)
+	for _, target := range e.Targets {
+		if target.Type == Domain {
+			domains = append(domains, target.Value)
+		}
+	}
+	return domains
+}
+
+func (e *ScanStartedEvent) GetIPValues() []string {
+	ips := make([]string, 0)
+	for _, target := range e.Targets {
+		if target.Type == IP {
+			ips = append(ips, target.Value)
+		}
+	}
+	return ips
+}
