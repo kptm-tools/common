@@ -2,6 +2,29 @@ package events
 
 import "github.com/kptm-tools/common/common/results"
 
+// TargetType defines the type of the target being scanned, such as IP or Domain
+type TargetType string
+
+const (
+	// IP represents a target of type IP address
+	IP TargetType = "IP"
+
+	// Domain represents a target of type domain name
+	Domain TargetType = "Domain"
+)
+
+// Target represents a scan target with its alias, value and type.
+type Target struct {
+	// Alias is a user-friendly name for the target
+	Alias string `json:"alias"`
+
+	// Value is the actual IP address or domain name of the target.
+	Value string `json:"value"`
+
+	// Type specifies whether the target is an IP or a Domain.
+	Type TargetType `json:"type"`
+}
+
 // ScanStartedEvent represents the payload for a scan initiation event.
 // This event signals that a scan has begun for a specific target.
 type ScanStartedEvent struct {
@@ -9,7 +32,7 @@ type ScanStartedEvent struct {
 	ScanID string `json:"scan_id"`
 
 	// Target is the domain or IP being scanned
-	Targets []string `json:"target"`
+	Targets []Target `json:"target"`
 
 	// Timestamp is the Unix timestamp when the scan started
 	Timestamp int64 `json:"timestamp"`
