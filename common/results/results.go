@@ -5,6 +5,15 @@ import (
 	"fmt"
 )
 
+type ServiceName string
+
+const (
+	ServiceWhoIs     ServiceName = "WhoIs"
+	ServiceHarvester ServiceName = "Harvester"
+	ServiceDNSLookup ServiceName = "DNSLookup"
+	ServiceNmap      ServiceName = "Nmap"
+)
+
 // TargetResult represents the scan result for a specific target.
 // It includes the target identifier and any data gathered during the scan.
 type TargetResult struct {
@@ -13,7 +22,7 @@ type TargetResult struct {
 
 	// Results holds the technical detailes gathered for the target,
 	// stored as key-value pairs to accomodate varied scan types
-	Results map[string]interface{} `json:"results"`
+	Results map[ServiceName]interface{} `json:"results"`
 }
 
 // String returns a formatted string representation of the TargetResult.
