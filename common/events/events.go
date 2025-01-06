@@ -90,6 +90,7 @@ type NmapEvent struct {
 	Timestamp int64 `json:"timestamp"`
 }
 
+
 func (e *ScanStartedEvent) GetDomainValues() []string {
 	domains := make([]string, 0)
 	for _, target := range e.Targets {
