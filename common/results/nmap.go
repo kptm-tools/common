@@ -1,6 +1,9 @@
 package results
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type NmapResult struct {
 	HostName     string     `json:"host_name"`
@@ -38,4 +41,15 @@ func (r *NmapResult) String() string {
 		return ""
 	}
 	return string(data)
+}
+
+func (v *Vulnerability) BuildVulnersReferences() {
+	if v.Type != "" && v.ID != "" {
+		reference := buildVulnersReference(v.ID, v.Type)
+		v.References = append(v.References, reference)
+	}
+}
+
+func buildVulnersReference(id, vulnType string) string {
+	return fmt.Sprintf("https://vulners.com/%s/%s", vulnType, id)
 }
