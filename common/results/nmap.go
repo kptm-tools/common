@@ -1,18 +1,21 @@
 package results
 
+import "encoding/json"
+
 type NmapResult struct {
 	HostName     string     `json:"host_name"`
 	HostAddress  string     `json:"host_address"`
 	ScannedPorts []PortData `json:"scanned_ports"`
-	OSFamily     string     `json:"os_family"`
+	MostLikelyOS string     `json:"most_likely_os"`
 }
 
 type PortData struct {
-	ID       uint16  `xml:"portid,attr" json:"id"`
-	Protocol string  `xml:"protocol,attr" json:"protocol"`
-	Service  Service `xml:"service" json:"service"`
-	Product  string  `xml:"product" json:"product"`
-	State    string  `xml:"state" json:"state"`
+	ID              uint16          `xml:"portid,attr" json:"id"`
+	Protocol        string          `xml:"protocol,attr" json:"protocol"`
+	Service         Service         `xml:"service" json:"service"`
+	Product         string          `xml:"product" json:"product"`
+	State           string          `xml:"state" json:"state"`
+	Vulnerabilities []Vulnerability `xml:"vulnerabilities" json:"vulnerabilities"`
 }
 
 type Service struct {
@@ -22,8 +25,17 @@ type Service struct {
 }
 
 type Vulnerability struct {
-	ID         string   `json:"id"`
-	CVSS       float64  `json:"cvss"`
-	References []string `json:"reference"`
-	HasExploit bool     `json:"has_exploit"`
+	ID          string   `json:"id"`
+	Type        string   `json:"type"`
+	CVSS        float64  `json:"cvss"`
+	References  []string `json:"reference"`
+	Exploitable bool     `json:"has_exploit"`
+}
+
+func (r *NmapResult) String() string {
+	data, err := json.MarshalIndent(r, "", " ")
+	if err != nil {
+		return ""
+	}
+	return string(data)
 }
