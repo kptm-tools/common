@@ -19,7 +19,7 @@ func Test_GetDomainValues(t *testing.T) {
 				Targets: []Target{
 					{
 						Alias: "google",
-						Value: "google.com",
+						Value: "https://google.com",
 						Type:  Domain,
 					},
 					{
@@ -104,6 +104,11 @@ func Test_GetIPValues(t *testing.T) {
 						Value: "mydomain.com",
 						Type:  Domain,
 					},
+					{
+						Alias: "My Invalid IP",
+						Value: "256.256.256.256",
+						Type:  IP,
+					},
 				},
 				Timestamp: time.Now().Unix(),
 			},
@@ -150,6 +155,50 @@ func Test_GetIPValues(t *testing.T) {
 
 			if !reflect.DeepEqual(res, tc.expected) {
 				t.Errorf("Incorrect result, expected `%v`, got `%v`", tc.expected, res)
+			}
+		})
+	}
+}
+
+func Test_IsURL(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected bool
+	}{
+		{name: "Valid URL with http", input: "http://example.com", expected: true},
+		{name: "Valid URL with https", input: "https://example.com", expected: true},
+		{name: "Invalid URL", input: "http://", expected: false},
+		{name: "Empty string", input: "", expected: false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := IsURL(tt.input)
+			if result != tt.expected {
+				t.Errorf("expected %v, got %v", tt.expected, result)
+			}
+		})
+	}
+}
+
+func TestIsValidIPv4(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected bool
+	}{
+		{name: "Valid IPv4 address", input: "192.168.1.1", expected: true},
+		{name: "Invalid IPv4 address (out of range)", input: "256.256.256.256", expected: false},
+		{name: "Invalid IPv4 address (not enough octets)", input: "192.168.1", expected: false},
+		{name: "Empty string", input: "", expected: false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := IsValidIPv4(tt.input)
+			if result != tt.expected {
+				t.Errorf("expected %v, got %v", tt.expected, result)
 			}
 		})
 	}
