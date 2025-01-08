@@ -1,6 +1,11 @@
 package events
 
-import "github.com/kptm-tools/common/common/results"
+import (
+	"net"
+	"net/url"
+
+	"github.com/kptm-tools/common/common/results"
+)
 
 // TargetType defines the type of the target being scanned, such as IP or Domain
 type TargetType string
@@ -90,12 +95,19 @@ type NmapEvent struct {
 	Timestamp int64 `json:"timestamp"`
 }
 
-
 func (e *ScanStartedEvent) GetDomainValues() []string {
 	domains := make([]string, 0)
 	for _, target := range e.Targets {
 		if target.Type == Domain {
-			domains = append(domains, target.Value)
+			domain := target.Value
+			if IsURL(domain) {
+				parsedDomain, err := parseDomainFromURI(domain)
+				if err != nil {
+					continue
+				}
+				domain = parsedDomain
+			}
+			domains = append(domains, domain)
 		}
 	}
 	return domains
@@ -104,9 +116,27 @@ func (e *ScanStartedEvent) GetDomainValues() []string {
 func (e *ScanStartedEvent) GetIPValues() []string {
 	ips := make([]string, 0)
 	for _, target := range e.Targets {
-		if target.Type == IP {
+		if target.Type == IP && IsValidIPv4(target.Value) {
 			ips = append(ips, target.Value)
 		}
 	}
 	return ips
+}
+
+// IsURL checks if a string is a valid URL
+func IsURL(str string) bool {
+	u, err := url.ParseRequestURI(str)
+	return err == nil && u.Scheme != "" && u.Host != ""
+}
+
+// IsValidIPv4 validates whether a string is a valid IPv4 address.
+func IsValidIPv4(ip string) bool {
+	return net.ParseIP(ip) != nil && net.ParseIP(ip).To4() != nil
+
+}
+
+// parseDomainFromURI extracts the host part from a given URI
+func parseDomainFromURI(uri string) (string, error) {
+	u, err := url.ParseRequestURI(uri)
+	return u.Host, err
 }
