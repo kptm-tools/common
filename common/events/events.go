@@ -1,10 +1,12 @@
 package events
 
 import (
+	"fmt"
 	"net"
 	"net/url"
 
 	"github.com/kptm-tools/common/common/results"
+	"golang.org/x/net/publicsuffix"
 )
 
 // TargetType defines the type of the target being scanned, such as IP or Domain
@@ -101,8 +103,9 @@ func (e *ScanStartedEvent) GetDomainValues() []string {
 		if target.Type == Domain {
 			domain := target.Value
 			if IsURL(domain) {
-				parsedDomain, err := parseDomainFromURI(domain)
+				parsedDomain, err := ExtractDomain(domain)
 				if err != nil {
+					// Skip invalid URLs
 					continue
 				}
 				domain = parsedDomain
@@ -135,8 +138,18 @@ func IsValidIPv4(ip string) bool {
 
 }
 
-// parseDomainFromURI extracts the host part from a given URI
-func parseDomainFromURI(uri string) (string, error) {
-	u, err := url.ParseRequestURI(uri)
-	return u.Host, err
+// ExtractDomain extracts the host part from a given URI
+func ExtractDomain(rawURL string) (string, error) {
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return "", fmt.Errorf("invalid URL: %w", err)
+	}
+
+	hostName := u.Hostname()
+	domain, err := publicsuffix.EffectiveTLDPlusOne(hostName)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse top domain: %w", err)
+	}
+
+	return domain, nil
 }
