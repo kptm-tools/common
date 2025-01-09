@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"net/url"
+	"strings"
 
 	"github.com/kptm-tools/common/common/results"
 	"golang.org/x/net/publicsuffix"
@@ -152,4 +153,12 @@ func ExtractDomain(rawURL string) (string, error) {
 	}
 
 	return domain, nil
+}
+
+// NormalizeURL prefixes the protocol if it's missing in the URL
+func NormalizeURL(url string) string {
+	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
+		url = "http://" + url
+	}
+	return url
 }
