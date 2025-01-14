@@ -3,15 +3,8 @@ package results
 import (
 	"encoding/json"
 	"fmt"
-)
 
-type ServiceName string
-
-const (
-	ServiceWhoIs     ServiceName = "WhoIs"
-	ServiceHarvester ServiceName = "Harvester"
-	ServiceDNSLookup ServiceName = "DNSLookup"
-	ServiceNmap      ServiceName = "Nmap"
+	"github.com/kptm-tools/common/common/enums"
 )
 
 // TargetResult represents the scan result for a specific target.
@@ -22,7 +15,7 @@ type TargetResult struct {
 
 	// Results holds the technical detailes gathered for the target,
 	// stored as key-value pairs to accomodate varied scan types
-	Results map[ServiceName]interface{} `json:"results"`
+	Results map[enums.ServiceName]interface{} `json:"results"`
 }
 
 // String returns a formatted string representation of the TargetResult.
