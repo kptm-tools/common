@@ -6,20 +6,17 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/kptm-tools/common/common/enums"
 	"github.com/kptm-tools/common/common/results"
 	"golang.org/x/net/publicsuffix"
 )
 
-// TargetType defines the type of the target being scanned, such as IP or Domain
-type TargetType string
-
-const (
-	// IP represents a target of type IP address
-	IP TargetType = "IP"
-
-	// Domain represents a target of type domain name
-	Domain TargetType = "Domain"
-)
+var ServiceEventMap = map[enums.ServiceName]interface{}{
+	enums.ServiceWhoIs:     WhoIsEvent{},
+	enums.ServiceHarvester: HarvesterEvent{},
+	enums.ServiceDNSLookup: DNSLookupEvent{},
+	enums.ServiceNmap:      NmapEvent{},
+}
 
 // Target represents a scan target with its alias, value and type.
 type Target struct {
@@ -30,7 +27,7 @@ type Target struct {
 	Value string `json:"value"`
 
 	// Type specifies whether the target is an IP or a Domain.
-	Type TargetType `json:"type"`
+	Type enums.TargetType `json:"type"`
 }
 
 type BaseEvent struct {
@@ -101,7 +98,7 @@ type NmapEvent struct {
 func (e *ScanStartedEvent) GetDomainValues() []string {
 	domains := make([]string, 0)
 	for _, target := range e.Targets {
-		if target.Type == Domain {
+		if target.Type == enums.Domain {
 			domain := target.Value
 			if IsURL(domain) {
 				parsedDomain, err := ExtractDomain(domain)
@@ -120,7 +117,7 @@ func (e *ScanStartedEvent) GetDomainValues() []string {
 func (e *ScanStartedEvent) GetIPValues() []string {
 	ips := make([]string, 0)
 	for _, target := range e.Targets {
-		if target.Type == IP && IsValidIPv4(target.Value) {
+		if target.Type == enums.IP && IsValidIPv4(target.Value) {
 			ips = append(ips, target.Value)
 		}
 	}

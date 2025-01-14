@@ -10,8 +10,8 @@ type ScanStatus struct {
 	Status string
 
 	// Status of each individual service in the scan
-	ServicesStatus map[ServiceName]enums.ServiceStatus
+	ServicesStatus map[enums.ServiceName]enums.ServiceStatus
 
 	// Error details of each service in the scan
-	ErrorDetail map[ServiceName]string
+	ErrorDetail map[enums.ServiceName]string
 }
