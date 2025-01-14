@@ -60,7 +60,7 @@ type DNSLookupEvent struct {
 	BaseEvent
 
 	// Results contains the DNS lookup results for the target.
-	Result []results.TargetResult `json:"results"`
+	Results []results.TargetResult `json:"results"`
 }
 
 // WhoIsEvent represents the payload of a WhoIs lookup operation.
