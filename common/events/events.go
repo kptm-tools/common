@@ -18,6 +18,14 @@ var ServiceEventMap = map[enums.ServiceName]interface{}{
 	enums.ServiceNmap:      NmapEvent{},
 }
 
+var EventSubjectMap = map[interface{}]enums.EventSubjectName{
+	ScanStartedEvent{}: enums.ScanStartedEventSubject,
+	WhoIsEvent{}:       enums.WhoIsEventSubject,
+	HarvesterEvent{}:   enums.HarvesterEventSubject,
+	DNSLookupEvent{}:   enums.DNSLookupEventSubject,
+	NmapEvent{}:        enums.NmapEventSubject,
+}
+
 // Target represents a scan target with its alias, value and type.
 type Target struct {
 	// Alias is a user-friendly name for the target
