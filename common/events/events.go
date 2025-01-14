@@ -33,6 +33,22 @@ type Target struct {
 	Type TargetType `json:"type"`
 }
 
+type BaseEvent struct {
+	// ScanID is the unique ideantifier of the scan
+	ScanID string `json:"scan_id"`
+
+	// Timestamp is the Unix timestamp when the scan started
+	Timestamp int64 `json:"timestamp"`
+
+	// Include error details if applicable
+	Error *EventError `json:"error,omitempty"`
+}
+
+type EventError struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
 // ScanStartedEvent represents the payload for a scan initiation event.
 // This event signals that a scan has begun for a specific target.
 type ScanStartedEvent struct {
@@ -49,53 +65,37 @@ type ScanStartedEvent struct {
 // DNSLookupEvent represents the payload of a DNSLookup operation.
 // This event provides details about the DNS information gathered for scan targets.
 type DNSLookupEvent struct {
-	// ScanID is the unique identifier of the scan associated with this event.
-	ScanID string `json:"scan_id"`
+	BaseEvent
 
 	// Results contains the DNS lookup results for the target.
-	Result []results.TargetResult `json:"results"`
-
-	// Timestamp is the Unix timestamp when the scan started
-	Timestamp int64 `json:"timestamp"`
+	Results []results.TargetResult `json:"results"`
 }
 
 // WhoIsEvent represents the payload of a WhoIs lookup operation.
 // This event provides details about the WhoIs information gathered for scan targets.
 type WhoIsEvent struct {
-	// ScanID is the unique identifier of the scan associated with this event.
-	ScanID string `json:"scan_id"`
+	BaseEvent
 
 	// Results contains the WhoIs lookup results for the target.
 	Results []results.TargetResult `json:"results"`
-
-	// Timestamp is the Unix timestamp when the scan started
-	Timestamp int64 `json:"timestamp"`
 }
 
 // HarvesterEvent represents the payload of a Harvester scan operation.
 // This event provides details about the Harvester information gathered for scan targets.
 type HarvesterEvent struct {
-	// ScanID is the unique identifier of the scan associated with this event.
-	ScanID string `json:"scan_id"`
+	BaseEvent
 
 	// TargetResult contains the WhoIs lookup results for the target.
 	Results []results.TargetResult `json:"results"`
-
-	// Timestamp is the Unix timestamp when the scan started
-	Timestamp int64 `json:"timestamp"`
 }
 
 // NmapEvent represents the payload of a Harvester scan operation.
 // This event provides details about the Harvester information gathered for scan targets.
 type NmapEvent struct {
-	// ScanID is the unique identifier of the scan associated with this event.
-	ScanID string `json:"scan_id"`
+	BaseEvent
 
 	// TargetResult contains the WhoIs lookup results for the target.
 	Results []results.TargetResult `json:"results"`
-
-	// Timestamp is the Unix timestamp when the scan started
-	Timestamp int64 `json:"timestamp"`
 }
 
 func (e *ScanStartedEvent) GetDomainValues() []string {
