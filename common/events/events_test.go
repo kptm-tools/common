@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/kptm-tools/common/common/enums"
 )
 
 func Test_GetDomainValues(t *testing.T) {
@@ -20,17 +22,17 @@ func Test_GetDomainValues(t *testing.T) {
 					{
 						Alias: "google",
 						Value: "https://google.com",
-						Type:  Domain,
+						Type:  enums.Domain,
 					},
 					{
 						Alias: "My IP",
 						Value: "192.168.1.1",
-						Type:  IP,
+						Type:  enums.IP,
 					},
 					{
 						Alias: "My Domain",
 						Value: "mydomain.com",
-						Type:  Domain,
+						Type:  enums.Domain,
 					},
 				},
 				Timestamp: time.Now().Unix(),
@@ -45,7 +47,7 @@ func Test_GetDomainValues(t *testing.T) {
 					{
 						Alias: "My IP",
 						Value: "192.168.1.1",
-						Type:  IP,
+						Type:  enums.IP,
 					},
 				},
 				Timestamp: time.Now().Unix(),
@@ -92,22 +94,22 @@ func Test_GetIPValues(t *testing.T) {
 					{
 						Alias: "google",
 						Value: "google.com",
-						Type:  Domain,
+						Type:  enums.Domain,
 					},
 					{
 						Alias: "My IP",
 						Value: "192.168.1.1",
-						Type:  IP,
+						Type:  enums.IP,
 					},
 					{
 						Alias: "My Domain",
 						Value: "mydomain.com",
-						Type:  Domain,
+						Type:  enums.Domain,
 					},
 					{
 						Alias: "My Invalid IP",
 						Value: "256.256.256.256",
-						Type:  IP,
+						Type:  enums.IP,
 					},
 				},
 				Timestamp: time.Now().Unix(),
@@ -122,12 +124,12 @@ func Test_GetIPValues(t *testing.T) {
 					{
 						Alias: "My Domain",
 						Value: "mydomain.com",
-						Type:  Domain,
+						Type:  enums.Domain,
 					},
 					{
 						Alias: "google",
 						Value: "google.com",
-						Type:  Domain,
+						Type:  enums.Domain,
 					},
 				},
 				Timestamp: time.Now().Unix(),
