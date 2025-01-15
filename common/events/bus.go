@@ -68,7 +68,7 @@ func (n *NatsEventBus) Subscribe(subject string, handler func(msg *nats.Msg)) er
 		return fmt.Errorf("Failed to subscribe to `%s`: %s", subject, err.Error())
 	}
 
-	n.Logger.Info("Subscribed to subject successfully.", "subject", subject)
+	n.Logger.Info("Subscribed to subject successfully.", slog.String("subject", subject))
 	return nil
 }
 
@@ -85,6 +85,6 @@ func (n *NatsEventBus) Publish(subject string, payload []byte) error {
 		return err
 	}
 
-	n.Logger.Info("Published message", "subject", subject, "payload", payload)
+	n.Logger.Info("Published message", slog.String("subject", subject), slog.String("payload", string(payload)))
 	return nil
 }
