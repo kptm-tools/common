@@ -18,14 +18,6 @@ var ServiceEventMap = map[enums.ServiceName]interface{}{
 	enums.ServiceNmap:      NmapEvent{},
 }
 
-var EventSubjectMap = map[interface{}]enums.EventSubjectName{
-	ScanStartedEvent{}: enums.ScanStartedEventSubject,
-	WhoIsEvent{}:       enums.WhoIsEventSubject,
-	HarvesterEvent{}:   enums.HarvesterEventSubject,
-	DNSLookupEvent{}:   enums.DNSLookupEventSubject,
-	NmapEvent{}:        enums.NmapEventSubject,
-}
-
 // Target represents a scan target with its alias, value and type.
 type Target struct {
 	// Alias is a user-friendly name for the target
@@ -62,6 +54,16 @@ type ScanStartedEvent struct {
 
 	// Target is the domain or IP being scanned
 	Targets []Target `json:"target"`
+
+	// Timestamp is the Unix timestamp when the scan started
+	Timestamp int64 `json:"timestamp"`
+}
+
+// ScanCancelledEvent represents the payload for a scan cancellation event.
+// This event signals that a specific scan has been cancelled.
+type ScanCancelledEvent struct {
+	// ScanID is the unique ideantifier of the scan
+	ScanID string `json:"scan_id"`
 
 	// Timestamp is the Unix timestamp when the scan started
 	Timestamp int64 `json:"timestamp"`
