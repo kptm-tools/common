@@ -35,6 +35,13 @@ type Vulnerability struct {
 	Exploitable bool     `json:"has_exploit"`
 }
 
+type SeverityCounts struct {
+	Critical int `json:"critical"`
+	High     int `json:"high"`
+	Medium   int `json:"medium"`
+	Low      int `json:"low"`
+}
+
 func (r *NmapResult) String() string {
 	data, err := json.MarshalIndent(r, "", " ")
 	if err != nil {
@@ -48,6 +55,32 @@ func (v *Vulnerability) BuildVulnersReferences() {
 		reference := buildVulnersReference(v.ID, v.Type)
 		v.References = append(v.References, reference)
 	}
+}
+
+func GetSeverityCounts(vulns []Vulnerability) SeverityCounts {
+	// CVSS thresholds
+	const (
+		lowMax    = 4.0
+		mediumMax = 7.0
+		highMax   = 9.0
+	)
+
+	counts := SeverityCounts{}
+
+	for _, vuln := range vulns {
+		switch {
+		case vuln.CVSS < lowMax:
+			counts.Low++
+		case vuln.CVSS < mediumMax:
+			counts.Medium++
+		case vuln.CVSS < highMax:
+			counts.High++
+		default:
+			counts.Critical++
+		}
+	}
+
+	return counts
 }
 
 func buildVulnersReference(id, vulnType string) string {
