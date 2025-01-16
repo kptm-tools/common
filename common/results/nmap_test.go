@@ -178,3 +178,66 @@ func Test_GetSeverityCounts(t *testing.T) {
 		})
 	}
 }
+
+func Test_TotalVulnerabilities(t *testing.T) {
+
+	testCases := []struct {
+		name     string
+		input    NmapResult
+		expected int
+	}{
+		{
+			name: "NmapResult with no vulnerabilities",
+			input: NmapResult{
+				ScannedPorts: []PortData{
+					{ID: 80, Vulnerabilities: []Vulnerability{}},
+					{ID: 443, Vulnerabilities: []Vulnerability{}},
+				},
+			},
+			expected: 0,
+		},
+		{
+			name: "NmapResult with single vulnerability on one port",
+			input: NmapResult{
+				ScannedPorts: []PortData{
+					{ID: 80, Vulnerabilities: []Vulnerability{
+						{ID: "CVE-1234", CVSS: 5.0},
+					}},
+					{ID: 443, Vulnerabilities: []Vulnerability{}},
+				},
+			},
+			expected: 1,
+		},
+		{
+			name: "Multiple vulnerabilities on multiple ports",
+			input: NmapResult{
+				ScannedPorts: []PortData{
+					{ID: 80, Vulnerabilities: []Vulnerability{
+						{ID: "CVE-1234", CVSS: 5.0},
+						{ID: "CVE-5678", CVSS: 7.5},
+					}},
+					{ID: 443, Vulnerabilities: []Vulnerability{
+						{ID: "CVE-91011", CVSS: 9.8},
+					}},
+				},
+			},
+			expected: 3,
+		},
+		{
+			name: "No scanned ports",
+			input: NmapResult{
+				ScannedPorts: []PortData{},
+			},
+			expected: 0,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			res := tc.input.TotalVulnerabilities()
+			if res != tc.expected {
+				t.Errorf("Expected `%d`, got `%d`", tc.expected, res)
+			}
+		})
+	}
+}

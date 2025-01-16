@@ -50,6 +50,14 @@ func (r *NmapResult) String() string {
 	return string(data)
 }
 
+func (r *NmapResult) TotalVulnerabilities() int {
+	var count int
+	for _, portData := range r.ScannedPorts {
+		count += len(portData.Vulnerabilities)
+	}
+	return count
+}
+
 func (v *Vulnerability) BuildVulnersReferences() {
 	if v.Type != "" && v.ID != "" {
 		reference := buildVulnersReference(v.ID, v.Type)
