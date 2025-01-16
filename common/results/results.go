@@ -18,12 +18,11 @@ type TargetResult struct {
 	Results map[enums.ServiceName]interface{} `json:"results"`
 }
 
-// String returns a formatted string representation of the TargetResult.
-// It serializes the result to JSON for easy readability and debugging.
-func (r *TargetResult) String() string {
+// ToJSON returns a detailed JSON representation of the TargetResult.
+func (r *TargetResult) ToJSON() (string, error) {
 	data, err := json.MarshalIndent(r, "", " ")
 	if err != nil {
-		return fmt.Sprintf("Error marshalling TargetResult: %v", err)
+		return "", fmt.Errorf("Error marshalling TargetResult: %w", err)
 	}
-	return fmt.Sprintf("Result\n%s", string(data))
+	return string(data), nil
 }
