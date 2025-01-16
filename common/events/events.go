@@ -18,18 +18,6 @@ var ServiceEventMap = map[enums.ServiceName]interface{}{
 	enums.ServiceNmap:      NmapEvent{},
 }
 
-// Target represents a scan target with its alias, value and type.
-type Target struct {
-	// Alias is a user-friendly name for the target
-	Alias string `json:"alias"`
-
-	// Value is the actual IP address or domain name of the target.
-	Value string `json:"value"`
-
-	// Type specifies whether the target is an IP or a Domain.
-	Type enums.TargetType `json:"type"`
-}
-
 type BaseEvent struct {
 	// ScanID is the unique ideantifier of the scan
 	ScanID string `json:"scan_id"`
@@ -53,7 +41,7 @@ type ScanStartedEvent struct {
 	ScanID string `json:"scan_id"`
 
 	// Target is the domain or IP being scanned
-	Targets []Target `json:"target"`
+	Targets []results.Target `json:"target"`
 
 	// Timestamp is the Unix timestamp when the scan started
 	Timestamp int64 `json:"timestamp"`
