@@ -3,6 +3,7 @@ package results
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 )
 
 const (
@@ -47,6 +48,37 @@ type SeverityCounts struct {
 	High     int `json:"high"`
 	Medium   int `json:"medium"`
 	Low      int `json:"low"`
+}
+
+// ScannedPortsSummary returns a concise summary of the NmapResult for logging purposes.
+func (r *NmapResult) ScannedPortsSummary() string {
+	severityCounts := GetSeverityCounts(r.GetAllVulnerabilites())
+	return fmt.Sprintf(
+		"Host %s (%s), Ports: %d, Vulnerabilities (Critical: %d, High %d, Medium: %d, Low: %d), OS: %s",
+		r.HostName,
+		r.HostAddress,
+		len(r.ScannedPorts),
+		severityCounts.Critical,
+		severityCounts.High,
+		severityCounts.Medium,
+		severityCounts.Low,
+		r.MostLikelyOS,
+	)
+}
+
+// LogValue creates a standard structured log representation for logging.
+func (r *NmapResult) LogValue() slog.Value {
+	severityCounts := GetSeverityCounts(r.GetAllVulnerabilites())
+	return slog.GroupValue(
+		slog.String("host_name", r.HostName),
+		slog.String("host_address", r.HostAddress),
+		slog.Int("ports_scanned", len(r.ScannedPorts)),
+		slog.String("most_likely_os", r.MostLikelyOS),
+		slog.Int("vulnerabilities_critical", severityCounts.Critical),
+		slog.Int("vulnerabilities_high", severityCounts.High),
+		slog.Int("vulnerabilities_medium", severityCounts.Medium),
+		slog.Int("vulnerabilities_low", severityCounts.Low),
+	)
 }
 
 func (r *NmapResult) String() string {
