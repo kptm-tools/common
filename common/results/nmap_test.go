@@ -241,3 +241,33 @@ func Test_TotalVulnerabilities(t *testing.T) {
 		})
 	}
 }
+
+func TestGetSeverityPerTypeMap(t *testing.T) {
+	result := NmapResult{
+		ScannedPorts: []PortData{
+			{Vulnerabilities: []Vulnerability{
+				{Type: "Tipo A", CVSS: 5.0},
+				{Type: "Tipo B", CVSS: 3.0},
+				{Type: "Tipo A", CVSS: 9.5}, // Higher severity for Tipo A
+			}},
+			{Vulnerabilities: []Vulnerability{
+				{Type: "Tipo C", CVSS: 4.0},
+				{Type: "Tipo B", CVSS: 7.0}, // Higher severity for Tipo B
+			}},
+		},
+	}
+
+	expected := map[string]int{
+		"Tipo A": SeverityCritical,
+		"Tipo B": SeverityHigh,
+		"Tipo C": SeverityMedium,
+	}
+
+	actual := result.GetSeverityPerTypeMap()
+
+	for key, expectedValue := range expected {
+		if actual[key] != expectedValue {
+			t.Errorf("expected %d for %s, got %d", expectedValue, key, actual[key])
+		}
+	}
+}

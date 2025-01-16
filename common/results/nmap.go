@@ -5,6 +5,13 @@ import (
 	"fmt"
 )
 
+const (
+	SeverityLow      = 1
+	SeverityMedium   = 2
+	SeverityHigh     = 3
+	SeverityCritical = 4
+)
+
 type NmapResult struct {
 	HostName     string     `json:"host_name"`
 	HostAddress  string     `json:"host_address"`
@@ -62,6 +69,25 @@ func (r *NmapResult) TotalVulnerabilities() int {
 	return len(r.GetAllVulnerabilites())
 }
 
+func (r *NmapResult) GetSeverityPerTypeMap() map[string]int {
+	severityMap := make(map[string]int)
+
+	for _, port := range r.ScannedPorts {
+		for _, vuln := range port.Vulnerabilities {
+			currentSeverity := mapCVSS(vuln.CVSS)
+			if maxSeverity, exists := severityMap[vuln.Type]; exists {
+				if currentSeverity > maxSeverity {
+					severityMap[vuln.Type] = currentSeverity
+				}
+			} else {
+				severityMap[vuln.Type] = currentSeverity
+			}
+		}
+	}
+
+	return severityMap
+}
+
 func (v *Vulnerability) BuildVulnersReferences() {
 	if v.Type != "" && v.ID != "" {
 		reference := buildVulnersReference(v.ID, v.Type)
@@ -70,6 +96,27 @@ func (v *Vulnerability) BuildVulnersReferences() {
 }
 
 func GetSeverityCounts(vulns []Vulnerability) SeverityCounts {
+	counts := SeverityCounts{}
+
+	for _, vuln := range vulns {
+		switch mapCVSS(vuln.CVSS) {
+		case SeverityLow:
+			counts.Low++
+		case SeverityMedium:
+			counts.Medium++
+		case SeverityHigh:
+			counts.High++
+		case SeverityCritical:
+			counts.Critical++
+		default:
+			counts.Critical++
+		}
+	}
+
+	return counts
+}
+
+func mapCVSS(cvss float64) int {
 	// CVSS thresholds
 	const (
 		lowMax    = 4.0
@@ -77,22 +124,16 @@ func GetSeverityCounts(vulns []Vulnerability) SeverityCounts {
 		highMax   = 9.0
 	)
 
-	counts := SeverityCounts{}
-
-	for _, vuln := range vulns {
-		switch {
-		case vuln.CVSS < lowMax:
-			counts.Low++
-		case vuln.CVSS < mediumMax:
-			counts.Medium++
-		case vuln.CVSS < highMax:
-			counts.High++
-		default:
-			counts.Critical++
-		}
+	switch {
+	case cvss < lowMax:
+		return SeverityLow
+	case cvss < mediumMax:
+		return SeverityMedium
+	case cvss < highMax:
+		return SeverityHigh
+	default:
+		return SeverityCritical
 	}
-
-	return counts
 }
 
 func buildVulnersReference(id, vulnType string) string {
