@@ -81,7 +81,7 @@ func (r *NmapResult) LogValue() slog.Value {
 	)
 }
 
-func (r *NmapResult) String() string {
+func (r *NmapResult) ToJSON() string {
 	data, err := json.MarshalIndent(r, "", " ")
 	if err != nil {
 		return ""
