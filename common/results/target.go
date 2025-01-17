@@ -22,7 +22,7 @@ type Target struct {
 // TargetResult represents the scan result for a specific target.
 // It includes the target identifier and any data gathered during the scan.
 type TargetResult struct {
-	// Target is the domain or IP address being scanned.
+	// Target is target associated with the result.
 	Target Target `json:"target"`
 
 	// Results holds the technical detailes gathered for the target,
