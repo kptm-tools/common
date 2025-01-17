@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/kptm-tools/common/common/enums"
+	"github.com/kptm-tools/common/common/results"
 )
 
 func Test_GetDomainValues(t *testing.T) {
@@ -18,7 +19,7 @@ func Test_GetDomainValues(t *testing.T) {
 			name: "ScanStartedEvent with domains and ips",
 			event: ScanStartedEvent{
 				ScanID: "738a4212-265a-464c-8b04-64fd1e1b66a1",
-				Targets: []Target{
+				Targets: []results.Target{
 					{
 						Alias: "google",
 						Value: "https://google.com",
@@ -43,7 +44,7 @@ func Test_GetDomainValues(t *testing.T) {
 			name: "ScanStartedEvent with only ips",
 			event: ScanStartedEvent{
 				ScanID: "738a4212-265a-464c-8b04-64fd1e1b66a1",
-				Targets: []Target{
+				Targets: []results.Target{
 					{
 						Alias: "My IP",
 						Value: "192.168.1.1",
@@ -58,7 +59,7 @@ func Test_GetDomainValues(t *testing.T) {
 			name: "ScanStartedEvent with no targets",
 			event: ScanStartedEvent{
 				ScanID:    "738a4212-265a-464c-8b04-64fd1e1b66a1",
-				Targets:   []Target{},
+				Targets:   []results.Target{},
 				Timestamp: time.Now().Unix(),
 			},
 			expected: []string{},
@@ -90,7 +91,7 @@ func Test_GetIPValues(t *testing.T) {
 			name: "ScanStartedEvent with domains and ips",
 			event: ScanStartedEvent{
 				ScanID: "738a4212-265a-464c-8b04-64fd1e1b66a1",
-				Targets: []Target{
+				Targets: []results.Target{
 					{
 						Alias: "google",
 						Value: "google.com",
@@ -120,7 +121,7 @@ func Test_GetIPValues(t *testing.T) {
 			name: "ScanStartedEvent with only domains",
 			event: ScanStartedEvent{
 				ScanID: "738a4212-265a-464c-8b04-64fd1e1b66a1",
-				Targets: []Target{
+				Targets: []results.Target{
 					{
 						Alias: "My Domain",
 						Value: "mydomain.com",
@@ -140,7 +141,7 @@ func Test_GetIPValues(t *testing.T) {
 			name: "ScanStartedEvent with no targets",
 			event: ScanStartedEvent{
 				ScanID:    "738a4212-265a-464c-8b04-64fd1e1b66a1",
-				Targets:   []Target{},
+				Targets:   []results.Target{},
 				Timestamp: time.Now().Unix(),
 			},
 			expected: []string{},

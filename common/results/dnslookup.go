@@ -1,6 +1,8 @@
 package results
 
 import (
+	"encoding/json"
+	"log/slog"
 	"time"
 )
 
@@ -60,6 +62,38 @@ type DNSKey struct {
 	Flags     int `json:"flags"`     // Flags of the key
 	Protocol  int `json:"protocol"`  // Protocol of the key
 	Algorithm int `json:"algorithm"` // Algorithm of the key
+}
+
+// LogValue creates a standard structured log representation for logging.
+func (r *DNSLookupResult) LogValue() slog.Value {
+	var recordValues []slog.Value
+	for _, record := range r.DNSRecords {
+		recordValues = append(recordValues, slog.GroupValue(
+			slog.String("type", string(record.Type)),
+			slog.String("name", record.Name),
+			slog.Int("ttl", record.TTL),
+			slog.Any("value", record.Value),
+			slog.Any("priority", record.Priority),
+		))
+	}
+
+	return slog.GroupValue(
+		slog.String("domain", r.Domain),
+		slog.Bool("dnssec_enabled", r.DNSSECEnabled),
+		slog.String("lookup_duration", r.LookupDuration.String()),
+		slog.Time("created_at", r.CreatedAt),
+		slog.String("error", r.Error),
+		slog.Any("dns_records", recordValues),
+	)
+}
+
+// ToJSON returns a visually friendly JSON string which can be displayed with fmt.
+func (r *DNSLookupResult) ToJSON() string {
+	data, err := json.MarshalIndent(r, "", " ")
+	if err != nil {
+		return ""
+	}
+	return string(data)
 }
 
 func HasDNSKeyRecord(records []DNSRecord) bool {
