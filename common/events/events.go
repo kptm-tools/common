@@ -93,33 +93,33 @@ type NmapEvent struct {
 	Results []results.TargetResult `json:"results"`
 }
 
-func (e *ScanStartedEvent) GetDomainValues() []string {
-	domains := make([]string, 0)
+func (e *ScanStartedEvent) GetDomainTargets() []results.Target {
+	domainTargets := make([]results.Target, 0)
 	for _, target := range e.Targets {
 		if target.Type == enums.Domain {
-			domain := target.Value
-			if IsURL(domain) {
-				parsedDomain, err := ExtractDomain(domain)
+			targetCopy := target
+			if IsURL(target.Value) {
+				parsedDomain, err := ExtractDomain(target.Value)
 				if err != nil {
 					// Skip invalid URLs
 					continue
 				}
-				domain = parsedDomain
+				targetCopy.Value = parsedDomain
 			}
-			domains = append(domains, domain)
+			domainTargets = append(domainTargets, targetCopy)
 		}
 	}
-	return domains
+	return domainTargets
 }
 
-func (e *ScanStartedEvent) GetIPValues() []string {
-	ips := make([]string, 0)
+func (e *ScanStartedEvent) GetIPTargets() []results.Target {
+	ipTargets := make([]results.Target, 0)
 	for _, target := range e.Targets {
 		if target.Type == enums.IP && IsValidIPv4(target.Value) {
-			ips = append(ips, target.Value)
+			ipTargets = append(ipTargets, target)
 		}
 	}
-	return ips
+	return ipTargets
 }
 
 // IsURL checks if a string is a valid URL
