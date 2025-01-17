@@ -1,7 +1,6 @@
 package events
 
 import (
-	"reflect"
 	"testing"
 	"time"
 
@@ -9,11 +8,11 @@ import (
 	"github.com/kptm-tools/common/common/results"
 )
 
-func Test_GetDomainValues(t *testing.T) {
+func Test_GetDomainTargets(t *testing.T) {
 	var testCases = []struct {
 		name     string
 		event    ScanStartedEvent
-		expected []string
+		expected []results.Target
 	}{
 		{
 			name: "ScanStartedEvent with domains and ips",
@@ -38,7 +37,18 @@ func Test_GetDomainValues(t *testing.T) {
 				},
 				Timestamp: time.Now().Unix(),
 			},
-			expected: []string{"google.com", "mydomain.com"},
+			expected: []results.Target{
+				{
+					Alias: "google",
+					Value: "google.com",
+					Type:  enums.Domain,
+				},
+				{
+					Alias: "My Domain",
+					Value: "mydomain.com",
+					Type:  enums.Domain,
+				},
+			},
 		},
 		{
 			name: "ScanStartedEvent with only ips",
@@ -53,7 +63,7 @@ func Test_GetDomainValues(t *testing.T) {
 				},
 				Timestamp: time.Now().Unix(),
 			},
-			expected: []string{},
+			expected: []results.Target{},
 		},
 		{
 			name: "ScanStartedEvent with no targets",
@@ -62,30 +72,30 @@ func Test_GetDomainValues(t *testing.T) {
 				Targets:   []results.Target{},
 				Timestamp: time.Now().Unix(),
 			},
-			expected: []string{},
+			expected: []results.Target{},
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			res := tc.event.GetDomainValues()
+			res := tc.event.GetDomainTargets()
 
 			if len(res) != len(tc.expected) {
 				t.Errorf("Incorrect result, expected `%v`, got `%v`", tc.expected, res)
 			}
 
-			if !reflect.DeepEqual(res, tc.expected) {
+			if !compareTargets(res, tc.expected) {
 				t.Errorf("Incorrect result, expected `%v`, got `%v`", tc.expected, res)
 			}
 		})
 	}
 }
 
-func Test_GetIPValues(t *testing.T) {
+func Test_GetIPTargets(t *testing.T) {
 	var testCases = []struct {
 		name     string
 		event    ScanStartedEvent
-		expected []string
+		expected []results.Target
 	}{
 		{
 			name: "ScanStartedEvent with domains and ips",
@@ -115,7 +125,13 @@ func Test_GetIPValues(t *testing.T) {
 				},
 				Timestamp: time.Now().Unix(),
 			},
-			expected: []string{"192.168.1.1"},
+			expected: []results.Target{
+				{
+					Alias: "My IP",
+					Value: "192.168.1.1",
+					Type:  enums.IP,
+				},
+			},
 		},
 		{
 			name: "ScanStartedEvent with only domains",
@@ -135,7 +151,7 @@ func Test_GetIPValues(t *testing.T) {
 				},
 				Timestamp: time.Now().Unix(),
 			},
-			expected: []string{},
+			expected: []results.Target{},
 		},
 		{
 			name: "ScanStartedEvent with no targets",
@@ -144,19 +160,15 @@ func Test_GetIPValues(t *testing.T) {
 				Targets:   []results.Target{},
 				Timestamp: time.Now().Unix(),
 			},
-			expected: []string{},
+			expected: []results.Target{},
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			res := tc.event.GetIPValues()
+			res := tc.event.GetIPTargets()
 
-			if len(res) != len(tc.expected) {
-				t.Errorf("Incorrect result, expected `%v`, got `%v`", tc.expected, res)
-			}
-
-			if !reflect.DeepEqual(res, tc.expected) {
+			if !compareTargets(res, tc.expected) {
 				t.Errorf("Incorrect result, expected `%v`, got `%v`", tc.expected, res)
 			}
 		})
@@ -205,4 +217,28 @@ func TestIsValidIPv4(t *testing.T) {
 			}
 		})
 	}
+}
+
+func compareTargets(t1, t2 []results.Target) bool {
+	if len(t1) != len(t2) {
+		return false
+	}
+
+	// Convert slices to maps for comparison
+	map1 := make(map[string]results.Target)
+	map2 := make(map[string]results.Target)
+
+	for _, target := range t1 {
+		map1[target.Value] = target
+	}
+	for _, target := range t2 {
+		map2[target.Value] = target
+	}
+
+	for key, val := range map1 {
+		if map2[key] != val {
+			return false
+		}
+	}
+	return true
 }
