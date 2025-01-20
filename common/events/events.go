@@ -30,14 +30,14 @@ type BaseEvent struct {
 }
 
 type EventError struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
+	Code    enums.ErrorCode `json:"code"`
+	Message string          `json:"message"`
 }
 
 // ScanStartedEvent represents the payload for a scan initiation event.
 // This event signals that a scan has begun for a specific target.
 type ScanStartedEvent struct {
-	// ScanID is the unique ideantifier of the scan
+	// ScanID is the unique identifier of the scan
 	ScanID string `json:"scan_id"`
 
 	// Target is the domain or IP being scanned
@@ -50,11 +50,20 @@ type ScanStartedEvent struct {
 // ScanCancelledEvent represents the payload for a scan cancellation event.
 // This event signals that a specific scan has been cancelled.
 type ScanCancelledEvent struct {
-	// ScanID is the unique ideantifier of the scan
+	// ScanID is the unique identifier of the scan
 	ScanID string `json:"scan_id"`
 
 	// Timestamp is the Unix timestamp when the scan started
 	Timestamp int64 `json:"timestamp"`
+
+	// Error has the error details on why the scan failed.
+	Error EventError `json:"error"`
+}
+
+// ScanFailedEvent represents the payload for a scan failure event.
+// This event signals that a specific scan has failed and cannot go on.
+type ScanFailedEvent struct {
+	BaseEvent
 }
 
 // DNSLookupEvent represents the payload of a DNSLookup operation.
