@@ -5,6 +5,7 @@ import (
 	"net"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/kptm-tools/common/common/enums"
 	"github.com/kptm-tools/common/common/results"
@@ -30,31 +31,28 @@ type BaseEvent struct {
 }
 
 type EventError struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
+	Code    enums.ErrorCode `json:"code"`
+	Message string          `json:"message"`
 }
 
 // ScanStartedEvent represents the payload for a scan initiation event.
 // This event signals that a scan has begun for a specific target.
 type ScanStartedEvent struct {
-	// ScanID is the unique ideantifier of the scan
-	ScanID string `json:"scan_id"`
-
+	BaseEvent
 	// Target is the domain or IP being scanned
 	Targets []results.Target `json:"target"`
-
-	// Timestamp is the Unix timestamp when the scan started
-	Timestamp int64 `json:"timestamp"`
 }
 
 // ScanCancelledEvent represents the payload for a scan cancellation event.
 // This event signals that a specific scan has been cancelled.
 type ScanCancelledEvent struct {
-	// ScanID is the unique ideantifier of the scan
-	ScanID string `json:"scan_id"`
+	BaseEvent
+}
 
-	// Timestamp is the Unix timestamp when the scan started
-	Timestamp int64 `json:"timestamp"`
+// ScanFailedEvent represents the payload for a scan failure event.
+// This event signals that a specific scan has failed and cannot go on.
+type ScanFailedEvent struct {
+	BaseEvent
 }
 
 // DNSLookupEvent represents the payload of a DNSLookup operation.
@@ -120,6 +118,39 @@ func (e *ScanStartedEvent) GetIPTargets() []results.Target {
 		}
 	}
 	return ipTargets
+}
+
+func NewScanStartedEvent(scanID string, targets []results.Target) ScanStartedEvent {
+	return ScanStartedEvent{
+		BaseEvent: BaseEvent{
+			ScanID:    scanID,
+			Timestamp: time.Now().Unix(),
+		},
+		Targets: targets,
+	}
+}
+
+func NewScanFailedEvent(scanID string, errorCode enums.ErrorCode, message string) ScanFailedEvent {
+	return ScanFailedEvent{
+		BaseEvent: BaseEvent{
+			ScanID:    scanID,
+			Timestamp: time.Now().Unix(),
+			Error: &EventError{
+				Code:    errorCode,
+				Message: message,
+			},
+		},
+	}
+}
+
+func NewScanCancelledEvent(scanID string) ScanCancelledEvent {
+	return ScanCancelledEvent{
+		BaseEvent: BaseEvent{
+			ScanID:    scanID,
+			Timestamp: time.Now().Unix(),
+			Error:     nil,
+		},
+	}
 }
 
 // IsURL checks if a string is a valid URL
