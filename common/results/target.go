@@ -38,3 +38,11 @@ func (r *TargetResult) ToJSON() (string, error) {
 	}
 	return string(data), nil
 }
+
+// ServiceResult represents the scan result for a specific service.
+type ServiceResult struct {
+	ScanID      string
+	ServiceName enums.ServiceName
+	Result      []TargetResult
+	Err         error
+}

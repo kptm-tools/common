@@ -17,7 +17,11 @@ func Test_GetDomainTargets(t *testing.T) {
 		{
 			name: "ScanStartedEvent with domains and ips",
 			event: ScanStartedEvent{
-				ScanID: "738a4212-265a-464c-8b04-64fd1e1b66a1",
+				BaseEvent: BaseEvent{
+
+					ScanID:    "738a4212-265a-464c-8b04-64fd1e1b66a1",
+					Timestamp: time.Now().Unix(),
+				},
 				Targets: []results.Target{
 					{
 						Alias: "google",
@@ -35,7 +39,6 @@ func Test_GetDomainTargets(t *testing.T) {
 						Type:  enums.Domain,
 					},
 				},
-				Timestamp: time.Now().Unix(),
 			},
 			expected: []results.Target{
 				{
@@ -53,7 +56,10 @@ func Test_GetDomainTargets(t *testing.T) {
 		{
 			name: "ScanStartedEvent with only ips",
 			event: ScanStartedEvent{
-				ScanID: "738a4212-265a-464c-8b04-64fd1e1b66a1",
+				BaseEvent: BaseEvent{
+					ScanID:    "738a4212-265a-464c-8b04-64fd1e1b66a1",
+					Timestamp: time.Now().Unix(),
+				},
 				Targets: []results.Target{
 					{
 						Alias: "My IP",
@@ -61,16 +67,17 @@ func Test_GetDomainTargets(t *testing.T) {
 						Type:  enums.IP,
 					},
 				},
-				Timestamp: time.Now().Unix(),
 			},
 			expected: []results.Target{},
 		},
 		{
 			name: "ScanStartedEvent with no targets",
 			event: ScanStartedEvent{
-				ScanID:    "738a4212-265a-464c-8b04-64fd1e1b66a1",
-				Targets:   []results.Target{},
-				Timestamp: time.Now().Unix(),
+				BaseEvent: BaseEvent{
+					ScanID:    "738a4212-265a-464c-8b04-64fd1e1b66a1",
+					Timestamp: time.Now().Unix(),
+				},
+				Targets: []results.Target{},
 			},
 			expected: []results.Target{},
 		},
@@ -100,7 +107,11 @@ func Test_GetIPTargets(t *testing.T) {
 		{
 			name: "ScanStartedEvent with domains and ips",
 			event: ScanStartedEvent{
-				ScanID: "738a4212-265a-464c-8b04-64fd1e1b66a1",
+				BaseEvent: BaseEvent{
+					ScanID: "738a4212-265a-464c-8b04-64fd1e1b66a1",
+
+					Timestamp: time.Now().Unix(),
+				},
 				Targets: []results.Target{
 					{
 						Alias: "google",
@@ -123,7 +134,6 @@ func Test_GetIPTargets(t *testing.T) {
 						Type:  enums.IP,
 					},
 				},
-				Timestamp: time.Now().Unix(),
 			},
 			expected: []results.Target{
 				{
@@ -136,7 +146,11 @@ func Test_GetIPTargets(t *testing.T) {
 		{
 			name: "ScanStartedEvent with only domains",
 			event: ScanStartedEvent{
-				ScanID: "738a4212-265a-464c-8b04-64fd1e1b66a1",
+				BaseEvent: BaseEvent{
+
+					ScanID:    "738a4212-265a-464c-8b04-64fd1e1b66a1",
+					Timestamp: time.Now().Unix(),
+				},
 				Targets: []results.Target{
 					{
 						Alias: "My Domain",
@@ -149,16 +163,17 @@ func Test_GetIPTargets(t *testing.T) {
 						Type:  enums.Domain,
 					},
 				},
-				Timestamp: time.Now().Unix(),
 			},
 			expected: []results.Target{},
 		},
 		{
 			name: "ScanStartedEvent with no targets",
 			event: ScanStartedEvent{
-				ScanID:    "738a4212-265a-464c-8b04-64fd1e1b66a1",
-				Targets:   []results.Target{},
-				Timestamp: time.Now().Unix(),
+				BaseEvent: BaseEvent{
+					ScanID:    "738a4212-265a-464c-8b04-64fd1e1b66a1",
+					Timestamp: time.Now().Unix(),
+				},
+				Targets: []results.Target{},
 			},
 			expected: []results.Target{},
 		},
