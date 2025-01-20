@@ -85,6 +85,6 @@ func (n *NatsEventBus) Publish(subject string, payload []byte) error {
 		return err
 	}
 
-	n.Logger.Info("Published message", slog.String("subject", subject), slog.String("payload", string(payload)))
+	n.Logger.Debug("Published message", slog.String("subject", subject), slog.String("payload", string(payload)))
 	return nil
 }
