@@ -18,14 +18,6 @@ type BaseEvent struct {
 
 	// Timestamp is the Unix timestamp when the scan started
 	Timestamp int64 `json:"timestamp"`
-
-	// Include error details if applicable
-	Error *EventError `json:"error,omitempty"`
-}
-
-type EventError struct {
-	Code    enums.ErrorCode `json:"code"`
-	Message string          `json:"message"`
 }
 
 // ScanStartedEvent represents the payload for a scan initiation event.
@@ -46,6 +38,9 @@ type ScanCancelledEvent struct {
 // This event signals that a specific scan has failed and cannot go on.
 type ScanFailedEvent struct {
 	BaseEvent
+
+	// Reason is the reason for the failure
+	Reason string `json:"reason"`
 }
 
 // ToolResultEvent represents the payload of a tool output.
@@ -81,16 +76,13 @@ func NewScanStartedEvent(scanID string, target results.Target) ScanStartedEvent 
 	}
 }
 
-func NewScanFailedEvent(scanID string, errorCode enums.ErrorCode, message string) ScanFailedEvent {
+func NewScanFailedEvent(scanID string, reason string) ScanFailedEvent {
 	return ScanFailedEvent{
 		BaseEvent: BaseEvent{
 			ScanID:    scanID,
 			Timestamp: time.Now().Unix(),
-			Error: &EventError{
-				Code:    errorCode,
-				Message: message,
-			},
 		},
+		Reason: reason,
 	}
 }
 
@@ -99,7 +91,6 @@ func NewScanCancelledEvent(scanID string) ScanCancelledEvent {
 		BaseEvent: BaseEvent{
 			ScanID:    scanID,
 			Timestamp: time.Now().Unix(),
-			Error:     nil,
 		},
 	}
 }
