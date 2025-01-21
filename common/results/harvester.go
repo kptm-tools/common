@@ -6,15 +6,13 @@ import (
 )
 
 type HarvesterResult struct {
-	Emails     []string `json:"emails"`          // A list of harvested emails
-	Subdomains []string `json:"subdomains"`      // A list of harvested subdomains
-	Error      string   `json:"error,omitempty"` // String contianing encountered errors
+	Emails     []string `json:"emails"`     // A list of harvested emails
+	Subdomains []string `json:"subdomains"` // A list of harvested subdomains
 }
 
 // LogValue creates a standard structured log representation for logging.
 func (r *HarvesterResult) LogValue() slog.Value {
 	return slog.GroupValue(
-		slog.Any("error", r.Error),
 		slog.Int("email_count", len(r.Emails)),
 		slog.Any("emails", r.Emails),
 		slog.Int("subdomain_count", len(r.Subdomains)),

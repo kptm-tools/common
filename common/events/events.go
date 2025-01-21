@@ -12,13 +12,6 @@ import (
 	"golang.org/x/net/publicsuffix"
 )
 
-var ServiceEventMap = map[enums.ServiceName]interface{}{
-	enums.ServiceWhoIs:     WhoIsEvent{},
-	enums.ServiceHarvester: HarvesterEvent{},
-	enums.ServiceDNSLookup: DNSLookupEvent{},
-	enums.ServiceNmap:      NmapEvent{},
-}
-
 type BaseEvent struct {
 	// ScanID is the unique ideantifier of the scan
 	ScanID string `json:"scan_id"`
@@ -40,7 +33,7 @@ type EventError struct {
 type ScanStartedEvent struct {
 	BaseEvent
 	// Target is the domain or IP being scanned
-	Targets []results.Target `json:"target"`
+	Target results.Target `json:"target"`
 }
 
 // ScanCancelledEvent represents the payload for a scan cancellation event.
@@ -55,78 +48,36 @@ type ScanFailedEvent struct {
 	BaseEvent
 }
 
-// DNSLookupEvent represents the payload of a DNSLookup operation.
-// This event provides details about the DNS information gathered for scan targets.
-type DNSLookupEvent struct {
+// ToolResultEvent represents the payload of a tool output.
+type ToolResultEvent struct {
 	BaseEvent
-
-	// Results contains the DNS lookup results for the target.
-	Results []results.TargetResult `json:"results"`
+	ToolResult results.ToolResult
 }
 
-// WhoIsEvent represents the payload of a WhoIs lookup operation.
-// This event provides details about the WhoIs information gathered for scan targets.
-type WhoIsEvent struct {
-	BaseEvent
-
-	// Results contains the WhoIs lookup results for the target.
-	Results []results.TargetResult `json:"results"`
-}
-
-// HarvesterEvent represents the payload of a Harvester scan operation.
-// This event provides details about the Harvester information gathered for scan targets.
-type HarvesterEvent struct {
-	BaseEvent
-
-	// TargetResult contains the WhoIs lookup results for the target.
-	Results []results.TargetResult `json:"results"`
-}
-
-// NmapEvent represents the payload of a Harvester scan operation.
-// This event provides details about the Harvester information gathered for scan targets.
-type NmapEvent struct {
-	BaseEvent
-
-	// TargetResult contains the WhoIs lookup results for the target.
-	Results []results.TargetResult `json:"results"`
-}
-
-func (e *ScanStartedEvent) GetDomainTargets() []results.Target {
-	domainTargets := make([]results.Target, 0)
-	for _, target := range e.Targets {
-		if target.Type == enums.Domain {
-			targetCopy := target
-			if IsURL(target.Value) {
-				parsedDomain, err := ExtractDomain(target.Value)
-				if err != nil {
-					// Skip invalid URLs
-					continue
-				}
-				targetCopy.Value = parsedDomain
-			}
-			domainTargets = append(domainTargets, targetCopy)
+func (e *ScanStartedEvent) HasDomainTarget() bool {
+	if e.Target.Type == enums.Domain {
+		normalizedURL := NormalizeURL(e.Target.Value)
+		if IsURL(normalizedURL) {
+			return true
 		}
 	}
-	return domainTargets
+	return false
 }
 
-func (e *ScanStartedEvent) GetIPTargets() []results.Target {
-	ipTargets := make([]results.Target, 0)
-	for _, target := range e.Targets {
-		if target.Type == enums.IP && IsValidIPv4(target.Value) {
-			ipTargets = append(ipTargets, target)
-		}
+func (e *ScanStartedEvent) HasIPTarget() bool {
+	if e.Target.Type == enums.IP && IsValidIPv4(e.Target.Value) {
+		return true
 	}
-	return ipTargets
+	return false
 }
 
-func NewScanStartedEvent(scanID string, targets []results.Target) ScanStartedEvent {
+func NewScanStartedEvent(scanID string, target results.Target) ScanStartedEvent {
 	return ScanStartedEvent{
 		BaseEvent: BaseEvent{
 			ScanID:    scanID,
 			Timestamp: time.Now().Unix(),
 		},
-		Targets: targets,
+		Target: target,
 	}
 }
 
