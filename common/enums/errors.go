@@ -4,7 +4,7 @@ type ErrorCode string
 
 const (
 	// ServiceError occurs when a service or dependency is unavailable or fails to respond.
-	ServiceError ErrorCode = "SERVICE_ERROR"
+	ToolError ErrorCode = "SERVICE_ERROR"
 
 	// ParsingError occurs when data cannot be parsed or deserialized correctly.
 	ParsingError ErrorCode = "PARSING_ERROR"

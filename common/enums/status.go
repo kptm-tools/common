@@ -3,17 +3,17 @@ package enums
 import "fmt"
 
 // ComponentStatus represents the status of a scan Service
-type ServiceStatus int
+type ScanStatus int
 
 const (
-	StatusPending    ServiceStatus = iota
-	StatusInProgress               // The service is currently running.
-	StatusCompleted                // The service completed successfully.
-	StatusFailed                   // The service failed due to an error.
-	StatusCancelled                // The service was cancelled before completion.
+	StatusPending    ScanStatus = iota
+	StatusInProgress            // The scan is currently running.
+	StatusCompleted             // The scan completed successfully.
+	StatusFailed                // The scan failed due to an error.
+	StatusCancelled             // The scan was cancelled before completion.
 )
 
-var statusStrings = map[ServiceStatus]string{
+var statusStrings = map[ScanStatus]string{
 	StatusPending:    "Pending",
 	StatusInProgress: "InProgress",
 	StatusCompleted:  "Completed",
@@ -21,14 +21,14 @@ var statusStrings = map[ServiceStatus]string{
 	StatusCancelled:  "Cancelled",
 }
 
-func (ss ServiceStatus) String() string {
+func (ss ScanStatus) String() string {
 	if str, exists := statusStrings[ss]; exists {
 		return str
 	}
 	return "Unknown"
 }
 
-func ParseServiceStatus(status string) (ServiceStatus, error) {
+func ParseServiceStatus(status string) (ScanStatus, error) {
 	for k, v := range statusStrings {
 		if v == status {
 			return k, nil
