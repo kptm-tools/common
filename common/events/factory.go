@@ -9,7 +9,7 @@ import (
 
 type ToolEventFactory struct{}
 
-func (f *ToolEventFactory) BuildEvent(scanID string, toolResult results.ToolResult, err error) ([]byte, error) {
+func (f *ToolEventFactory) BuildEvent(scanID string, toolResult results.ToolResult) ([]byte, error) {
 	evt := NewToolResultEvent(scanID, toolResult)
 	return json.Marshal(evt)
 }
