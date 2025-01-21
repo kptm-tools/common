@@ -8,183 +8,142 @@ import (
 	"github.com/kptm-tools/common/common/results"
 )
 
-func Test_GetDomainTargets(t *testing.T) {
+func Test_HasDomainTarget(t *testing.T) {
 	var testCases = []struct {
 		name     string
 		event    ScanStartedEvent
-		expected []results.Target
+		expected bool
 	}{
 		{
-			name: "ScanStartedEvent with domains and ips",
+			name: "Valid domain target with URL",
 			event: ScanStartedEvent{
 				BaseEvent: BaseEvent{
-
-					ScanID:    "738a4212-265a-464c-8b04-64fd1e1b66a1",
+					ScanID:    "12345",
 					Timestamp: time.Now().Unix(),
 				},
-				Targets: []results.Target{
-					{
-						Alias: "google",
-						Value: "https://google.com",
-						Type:  enums.Domain,
-					},
-					{
-						Alias: "My IP",
-						Value: "192.168.1.1",
-						Type:  enums.IP,
-					},
-					{
-						Alias: "My Domain",
-						Value: "mydomain.com",
-						Type:  enums.Domain,
-					},
-				},
-			},
-			expected: []results.Target{
-				{
-					Alias: "google",
-					Value: "google.com",
-					Type:  enums.Domain,
-				},
-				{
-					Alias: "My Domain",
-					Value: "mydomain.com",
+				Target: results.Target{
+					Alias: "Google",
+					Value: "https://google.com",
 					Type:  enums.Domain,
 				},
 			},
+			expected: true,
 		},
 		{
-			name: "ScanStartedEvent with only ips",
+			name: "Valid domain target without URL",
 			event: ScanStartedEvent{
 				BaseEvent: BaseEvent{
-					ScanID:    "738a4212-265a-464c-8b04-64fd1e1b66a1",
+					ScanID:    "12345",
 					Timestamp: time.Now().Unix(),
 				},
-				Targets: []results.Target{
-					{
-						Alias: "My IP",
-						Value: "192.168.1.1",
-						Type:  enums.IP,
-					},
+				Target: results.Target{
+					Alias: "Example",
+					Value: "example.com",
+					Type:  enums.Domain,
 				},
 			},
-			expected: []results.Target{},
+			expected: true,
 		},
 		{
-			name: "ScanStartedEvent with no targets",
+			name: "Empty domain target",
 			event: ScanStartedEvent{
 				BaseEvent: BaseEvent{
-					ScanID:    "738a4212-265a-464c-8b04-64fd1e1b66a1",
+					ScanID:    "12345",
 					Timestamp: time.Now().Unix(),
 				},
-				Targets: []results.Target{},
+				Target: results.Target{
+					Alias: "Empty",
+					Value: "",
+					Type:  enums.Domain,
+				},
 			},
-			expected: []results.Target{},
+			expected: false,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			res := tc.event.GetDomainTargets()
-
-			if len(res) != len(tc.expected) {
-				t.Errorf("Incorrect result, expected `%v`, got `%v`", tc.expected, res)
-			}
-
-			if !compareTargets(res, tc.expected) {
-				t.Errorf("Incorrect result, expected `%v`, got `%v`", tc.expected, res)
+			result := tc.event.HasDomainTarget()
+			if result != tc.expected {
+				t.Errorf("expected %v, got %v", tc.expected, result)
 			}
 		})
 	}
 }
 
-func Test_GetIPTargets(t *testing.T) {
+func Test_HasIPTarget(t *testing.T) {
 	var testCases = []struct {
 		name     string
 		event    ScanStartedEvent
-		expected []results.Target
+		expected bool
 	}{
 		{
-			name: "ScanStartedEvent with domains and ips",
+			name: "Valid IPv4 address",
 			event: ScanStartedEvent{
 				BaseEvent: BaseEvent{
-					ScanID: "738a4212-265a-464c-8b04-64fd1e1b66a1",
-
+					ScanID:    "12345",
 					Timestamp: time.Now().Unix(),
 				},
-				Targets: []results.Target{
-					{
-						Alias: "google",
-						Value: "google.com",
-						Type:  enums.Domain,
-					},
-					{
-						Alias: "My IP",
-						Value: "192.168.1.1",
-						Type:  enums.IP,
-					},
-					{
-						Alias: "My Domain",
-						Value: "mydomain.com",
-						Type:  enums.Domain,
-					},
-					{
-						Alias: "My Invalid IP",
-						Value: "256.256.256.256",
-						Type:  enums.IP,
-					},
-				},
-			},
-			expected: []results.Target{
-				{
-					Alias: "My IP",
-					Value: "192.168.1.1",
+				Target: results.Target{
+					Alias: "Localhost",
+					Value: "127.0.0.1",
 					Type:  enums.IP,
 				},
 			},
+			expected: true,
 		},
 		{
-			name: "ScanStartedEvent with only domains",
+			name: "Invalid IPv4 address (out of range)",
 			event: ScanStartedEvent{
 				BaseEvent: BaseEvent{
-
-					ScanID:    "738a4212-265a-464c-8b04-64fd1e1b66a1",
+					ScanID:    "12345",
 					Timestamp: time.Now().Unix(),
 				},
-				Targets: []results.Target{
-					{
-						Alias: "My Domain",
-						Value: "mydomain.com",
-						Type:  enums.Domain,
-					},
-					{
-						Alias: "google",
-						Value: "google.com",
-						Type:  enums.Domain,
-					},
+				Target: results.Target{
+					Alias: "Invalid",
+					Value: "256.256.256.256",
+					Type:  enums.IP,
 				},
 			},
-			expected: []results.Target{},
+			expected: false,
 		},
 		{
-			name: "ScanStartedEvent with no targets",
+			name: "Empty IP target",
 			event: ScanStartedEvent{
 				BaseEvent: BaseEvent{
-					ScanID:    "738a4212-265a-464c-8b04-64fd1e1b66a1",
+					ScanID:    "12345",
 					Timestamp: time.Now().Unix(),
 				},
-				Targets: []results.Target{},
+				Target: results.Target{
+					Alias: "Empty",
+					Value: "",
+					Type:  enums.IP,
+				},
 			},
-			expected: []results.Target{},
+			expected: false,
+		},
+		{
+			name: "Domain instead of IP",
+			event: ScanStartedEvent{
+				BaseEvent: BaseEvent{
+					ScanID:    "12345",
+					Timestamp: time.Now().Unix(),
+				},
+				Target: results.Target{
+					Alias: "Google",
+					Value: "google.com",
+					Type:  enums.Domain,
+				},
+			},
+			expected: false,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			res := tc.event.GetIPTargets()
-
-			if !compareTargets(res, tc.expected) {
-				t.Errorf("Incorrect result, expected `%v`, got `%v`", tc.expected, res)
+			result := tc.event.HasIPTarget()
+			if result != tc.expected {
+				t.Errorf("expected %v, got %v", tc.expected, result)
 			}
 		})
 	}
