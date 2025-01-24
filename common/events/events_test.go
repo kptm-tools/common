@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/kptm-tools/common/common/enums"
 	"github.com/kptm-tools/common/common/results"
 )
@@ -18,8 +19,8 @@ func Test_HasDomainTarget(t *testing.T) {
 			name: "Valid domain target with URL",
 			event: ScanStartedEvent{
 				BaseEvent: BaseEvent{
-					ScanID:    "12345",
-					Timestamp: time.Now().Unix(),
+					ScanID:    uuid.New(),
+					Timestamp: time.Now().UTC(),
 				},
 				Target: results.Target{
 					Alias: "Google",
@@ -33,8 +34,8 @@ func Test_HasDomainTarget(t *testing.T) {
 			name: "Valid domain target without URL",
 			event: ScanStartedEvent{
 				BaseEvent: BaseEvent{
-					ScanID:    "12345",
-					Timestamp: time.Now().Unix(),
+					ScanID:    uuid.New(),
+					Timestamp: time.Now().UTC(),
 				},
 				Target: results.Target{
 					Alias: "Example",
@@ -48,8 +49,8 @@ func Test_HasDomainTarget(t *testing.T) {
 			name: "Empty domain target",
 			event: ScanStartedEvent{
 				BaseEvent: BaseEvent{
-					ScanID:    "12345",
-					Timestamp: time.Now().Unix(),
+					ScanID:    uuid.New(),
+					Timestamp: time.Now().UTC(),
 				},
 				Target: results.Target{
 					Alias: "Empty",
@@ -81,8 +82,8 @@ func Test_HasIPTarget(t *testing.T) {
 			name: "Valid IPv4 address",
 			event: ScanStartedEvent{
 				BaseEvent: BaseEvent{
-					ScanID:    "12345",
-					Timestamp: time.Now().Unix(),
+					ScanID:    uuid.New(),
+					Timestamp: time.Now().UTC(),
 				},
 				Target: results.Target{
 					Alias: "Localhost",
@@ -96,8 +97,8 @@ func Test_HasIPTarget(t *testing.T) {
 			name: "Invalid IPv4 address (out of range)",
 			event: ScanStartedEvent{
 				BaseEvent: BaseEvent{
-					ScanID:    "12345",
-					Timestamp: time.Now().Unix(),
+					ScanID:    uuid.New(),
+					Timestamp: time.Now().UTC(),
 				},
 				Target: results.Target{
 					Alias: "Invalid",
@@ -111,8 +112,8 @@ func Test_HasIPTarget(t *testing.T) {
 			name: "Empty IP target",
 			event: ScanStartedEvent{
 				BaseEvent: BaseEvent{
-					ScanID:    "12345",
-					Timestamp: time.Now().Unix(),
+					ScanID:    uuid.New(),
+					Timestamp: time.Now().UTC(),
 				},
 				Target: results.Target{
 					Alias: "Empty",
@@ -126,8 +127,8 @@ func Test_HasIPTarget(t *testing.T) {
 			name: "Domain instead of IP",
 			event: ScanStartedEvent{
 				BaseEvent: BaseEvent{
-					ScanID:    "12345",
-					Timestamp: time.Now().Unix(),
+					ScanID:    uuid.New(),
+					Timestamp: time.Now().UTC(),
 				},
 				Target: results.Target{
 					Alias: "Google",

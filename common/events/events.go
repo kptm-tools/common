@@ -7,17 +7,18 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/kptm-tools/common/common/enums"
 	"github.com/kptm-tools/common/common/results"
 	"golang.org/x/net/publicsuffix"
 )
 
 type BaseEvent struct {
-	// ScanID is the unique ideantifier of the scan
-	ScanID string `json:"scan_id"`
+	// ScanID is the unique identifier of the scan
+	ScanID uuid.UUID `json:"scan_id"`
 
-	// Timestamp is the Unix timestamp when the scan started
-	Timestamp int64 `json:"timestamp"`
+	// Timestamp is the UTC timestamp when the scan started
+	Timestamp time.Time `json:"timestamp"`
 }
 
 // ScanStartedEvent represents the payload for a scan initiation event.
@@ -66,31 +67,31 @@ func (e *ScanStartedEvent) HasIPTarget() bool {
 	return false
 }
 
-func NewScanStartedEvent(scanID string, target results.Target) ScanStartedEvent {
+func NewScanStartedEvent(scanID uuid.UUID, target results.Target) ScanStartedEvent {
 	return ScanStartedEvent{
 		BaseEvent: BaseEvent{
 			ScanID:    scanID,
-			Timestamp: time.Now().Unix(),
+			Timestamp: time.Now().UTC(),
 		},
 		Target: target,
 	}
 }
 
-func NewScanFailedEvent(scanID string, reason string) ScanFailedEvent {
+func NewScanFailedEvent(scanID uuid.UUID, reason string) ScanFailedEvent {
 	return ScanFailedEvent{
 		BaseEvent: BaseEvent{
 			ScanID:    scanID,
-			Timestamp: time.Now().Unix(),
+			Timestamp: time.Now().UTC(),
 		},
 		Reason: reason,
 	}
 }
 
-func NewScanCancelledEvent(scanID string) ScanCancelledEvent {
+func NewScanCancelledEvent(scanID uuid.UUID) ScanCancelledEvent {
 	return ScanCancelledEvent{
 		BaseEvent: BaseEvent{
 			ScanID:    scanID,
-			Timestamp: time.Now().Unix(),
+			Timestamp: time.Now().UTC(),
 		},
 	}
 }

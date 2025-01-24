@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"time"
 
 	"github.com/kptm-tools/common/common/enums"
 )
@@ -19,7 +20,7 @@ type ToolResult struct {
 	Tool      enums.ToolName `json:"tool_name"`
 	Result    interface{}    `json:"result,omitempty"`
 	Err       *ToolError     `json:"error,omitempty"`
-	Timestamp int64          `json:"timestamp"`
+	Timestamp time.Time      `json:"timestamp"`
 }
 
 // ToJSON returns a detailed JSON representation of the TargetResult.
@@ -40,6 +41,6 @@ func (r *ToolResult) LogValue() slog.Value {
 			slog.String("code", string(r.Err.Code)),
 			slog.String("message", r.Err.Message),
 		)),
-		slog.Int64("timestamp", r.Timestamp),
+		slog.Time("timestamp", r.Timestamp),
 	)
 }
