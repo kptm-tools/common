@@ -106,7 +106,7 @@ func (r *NmapResult) GetSeverityPerTypeMap() map[string]int {
 
 	for _, port := range r.ScannedPorts {
 		for _, vuln := range port.Vulnerabilities {
-			currentSeverity := mapCVSS(vuln.CVSS)
+			currentSeverity := MapCVSS(vuln.CVSS)
 			if maxSeverity, exists := severityMap[vuln.Type]; exists {
 				if currentSeverity > maxSeverity {
 					severityMap[vuln.Type] = currentSeverity
@@ -131,7 +131,7 @@ func GetSeverityCounts(vulns []Vulnerability) SeverityCounts {
 	counts := SeverityCounts{}
 
 	for _, vuln := range vulns {
-		switch mapCVSS(vuln.CVSS) {
+		switch MapCVSS(vuln.CVSS) {
 		case SeverityLow:
 			counts.Low++
 		case SeverityMedium:
@@ -148,7 +148,7 @@ func GetSeverityCounts(vulns []Vulnerability) SeverityCounts {
 	return counts
 }
 
-func mapCVSS(cvss float64) int {
+func MapCVSS(cvss float64) int {
 	// CVSS thresholds
 	const (
 		lowMax    = 4.0
