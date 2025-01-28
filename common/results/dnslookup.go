@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log/slog"
 	"time"
+
+	"github.com/kptm-tools/common/common/enums"
 )
 
 const GoogleResolver = "8.8.8.8:53" // Google DNS Server
@@ -94,6 +96,10 @@ func (r *DNSLookupResult) ToJSON() string {
 		return ""
 	}
 	return string(data)
+}
+
+func (r *DNSLookupResult) GetToolName() enums.ToolName {
+	return enums.ToolDNSLookup
 }
 
 func HasDNSKeyRecord(records []DNSRecord) bool {
