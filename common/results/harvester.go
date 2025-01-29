@@ -3,6 +3,8 @@ package results
 import (
 	"encoding/json"
 	"log/slog"
+
+	"github.com/kptm-tools/common/common/enums"
 )
 
 type HarvesterResult struct {
@@ -27,4 +29,8 @@ func (r *HarvesterResult) ToJSON() string {
 		return ""
 	}
 	return string(data)
+}
+
+func (r *HarvesterResult) GetToolName() enums.ToolName {
+	return enums.ToolHarvester
 }

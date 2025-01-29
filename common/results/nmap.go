@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+
+	"github.com/kptm-tools/common/common/enums"
 )
 
 const (
@@ -118,6 +120,20 @@ func (r *NmapResult) GetSeverityPerTypeMap() map[string]int {
 	}
 
 	return severityMap
+}
+
+func (r *NmapResult) GetOpenPorts() []PortData {
+	var openPorts []PortData
+	for _, port := range r.ScannedPorts {
+		if port.State == "open" {
+			openPorts = append(openPorts, port)
+		}
+	}
+	return openPorts
+}
+
+func (r *NmapResult) GetToolName() enums.ToolName {
+	return enums.ToolNmap
 }
 
 func (v *Vulnerability) BuildVulnersReferences() {

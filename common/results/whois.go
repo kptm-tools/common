@@ -3,6 +3,7 @@ package results
 import (
 	"encoding/json"
 
+	"github.com/kptm-tools/common/common/enums"
 	whoisparser "github.com/likexian/whois-parser"
 	"golang.org/x/exp/slog"
 )
@@ -63,4 +64,8 @@ func (r *WhoIsResult) ToJSON() string {
 		return ""
 	}
 	return string(data)
+}
+
+func (r *WhoIsResult) GetToolName() enums.ToolName {
+	return enums.ToolWhoIs
 }
