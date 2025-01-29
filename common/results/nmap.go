@@ -122,6 +122,16 @@ func (r *NmapResult) GetSeverityPerTypeMap() map[string]int {
 	return severityMap
 }
 
+func (r *NmapResult) GetOpenPorts() []PortData {
+	var openPorts []PortData
+	for _, port := range r.ScannedPorts {
+		if port.State == "open" {
+			openPorts = append(openPorts, port)
+		}
+	}
+	return openPorts
+}
+
 func (r *NmapResult) GetToolName() enums.ToolName {
 	return enums.ToolNmap
 }
