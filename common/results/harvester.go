@@ -31,6 +31,6 @@ func (r *HarvesterResult) ToJSON() string {
 	return string(data)
 }
 
-func (r HarvesterResult) GetToolName() enums.ToolName {
+func (r *HarvesterResult) GetToolName() enums.ToolName {
 	return enums.ToolHarvester
 }
