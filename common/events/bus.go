@@ -14,6 +14,9 @@ type EventBus interface {
 	// Init initializes the event bus with any necessary subscription setup logic.
 	Init(setupSubscriptions func() error) error
 
+	// close closes the event bus
+	Close() error
+
 	// Subscribe subscribes to an event subject with a provided handler function.
 	// The handler is invoked when a message is received.
 	Subscribe(subject string, handler func(msg *nats.Msg)) error
@@ -52,6 +55,14 @@ func NewNatsEventBus(connStr string) (*NatsEventBus, error) {
 func (n *NatsEventBus) Init(setupSubscriptions func() error) error {
 	// Subscribing to events the system listens for
 	return setupSubscriptions()
+}
+
+func (n *NatsEventBus) Close() error {
+	if n.nc != nil {
+		n.nc.Close()
+		return nil
+	}
+	return nil
 }
 
 // Subscribe subscribes to the given event subject and specifies a handler function
