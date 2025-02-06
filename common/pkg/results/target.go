@@ -1,8 +1,6 @@
 package results
 
-import (
-	"github.com/kptm-tools/common/common/enums"
-)
+import "github.com/kptm-tools/common/common/pkg/enums"
 
 // Target represents a scan target with its alias, value and type.
 type Target struct {

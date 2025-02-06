@@ -1,16 +1,11 @@
 package events
 
 import (
-	"fmt"
-	"net"
-	"net/url"
-	"strings"
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/kptm-tools/common/common/enums"
-	"github.com/kptm-tools/common/common/results"
-	"golang.org/x/net/publicsuffix"
+	"github.com/kptm-tools/common/common/pkg/results"
+	"github.com/kptm-tools/common/common/pkg/results/tools"
 )
 
 type BaseEvent struct {
@@ -47,24 +42,7 @@ type ScanFailedEvent struct {
 // ToolResultEvent represents the payload of a tool output.
 type ToolResultEvent struct {
 	BaseEvent
-	ToolResult results.ToolResult
-}
-
-func (e *ScanStartedEvent) HasDomainTarget() bool {
-	if e.Target.Type == enums.Domain {
-		normalizedURL := NormalizeURL(e.Target.Value)
-		if IsURL(normalizedURL) {
-			return true
-		}
-	}
-	return false
-}
-
-func (e *ScanStartedEvent) HasIPTarget() bool {
-	if e.Target.Type == enums.IP && IsValidIPv4(e.Target.Value) {
-		return true
-	}
-	return false
+	ToolResult tools.ToolResult
 }
 
 func NewScanStartedEvent(scanID uuid.UUID, target results.Target) ScanStartedEvent {
@@ -94,40 +72,4 @@ func NewScanCancelledEvent(scanID uuid.UUID) ScanCancelledEvent {
 			Timestamp: time.Now().UTC(),
 		},
 	}
-}
-
-// IsURL checks if a string is a valid URL
-func IsURL(str string) bool {
-	u, err := url.ParseRequestURI(str)
-	return err == nil && u.Scheme != "" && u.Host != ""
-}
-
-// IsValidIPv4 validates whether a string is a valid IPv4 address.
-func IsValidIPv4(ip string) bool {
-	return net.ParseIP(ip) != nil && net.ParseIP(ip).To4() != nil
-
-}
-
-// ExtractDomain extracts the host part from a given URI
-func ExtractDomain(rawURL string) (string, error) {
-	u, err := url.Parse(rawURL)
-	if err != nil {
-		return "", fmt.Errorf("invalid URL: %w", err)
-	}
-
-	hostName := u.Hostname()
-	domain, err := publicsuffix.EffectiveTLDPlusOne(hostName)
-	if err != nil {
-		return "", fmt.Errorf("failed to parse top domain: %w", err)
-	}
-
-	return domain, nil
-}
-
-// NormalizeURL prefixes the protocol if it's missing in the URL
-func NormalizeURL(url string) string {
-	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
-		url = "http://" + url
-	}
-	return url
 }

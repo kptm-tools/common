@@ -1,4 +1,4 @@
-package results
+package tools
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/kptm-tools/common/common/enums"
+	"github.com/kptm-tools/common/common/pkg/enums"
 )
 
 type IToolResult interface {
@@ -17,6 +17,10 @@ type IToolResult interface {
 type ToolError struct {
 	Code    enums.ErrorCode `json:"code"`
 	Message string          `json:"message"`
+}
+
+func (t *ToolError) Error() string {
+	return t.Message
 }
 
 // ToolResult represents the scan result for a specific tool.
