@@ -3,13 +3,15 @@ package results
 import (
 	"log/slog"
 	"math"
+
+	"github.com/kptm-tools/common/common/pkg/results/tools"
 )
 
 func CalculateProtectionScore(
-	whoisResult WhoIsResult,
-	dnsLookupResult DNSLookupResult,
-	harvesterResult HarvesterResult,
-	nmapResult NmapResult,
+	whoisResult tools.WhoIsResult,
+	dnsLookupResult tools.DNSLookupResult,
+	harvesterResult tools.HarvesterResult,
+	nmapResult tools.NmapResult,
 ) (float64, error) {
 	const (
 		maxEmails      = 50
@@ -20,7 +22,7 @@ func CalculateProtectionScore(
 
 	var emailCount, subdomainCount, dnsRecordCount int
 	var whoisSuccessful bool
-	var vulnResults []Vulnerability
+	var vulnResults []tools.Vulnerability
 	var osDetectionPenalty float64
 
 	// Extract relevant data
@@ -33,7 +35,7 @@ func CalculateProtectionScore(
 	// Extract vulnerability data
 	vulners := nmapResult.GetAllVulnerabilites()
 	vulnResults = append(vulnResults, vulners...)
-	vulnCounts := GetSeverityCounts(vulnResults)
+	vulnCounts := tools.GetSeverityCounts(vulnResults)
 
 	// Calculate penalties
 	if nmapResult.MostLikelyOS != "" {

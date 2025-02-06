@@ -1,9 +1,9 @@
-package results
+package tools
 
 import (
 	"encoding/json"
 
-	"github.com/kptm-tools/common/common/enums"
+	"github.com/kptm-tools/common/common/pkg/enums"
 	whoisparser "github.com/likexian/whois-parser"
 	"golang.org/x/exp/slog"
 )

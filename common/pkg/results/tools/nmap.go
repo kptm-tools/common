@@ -1,11 +1,11 @@
-package results
+package tools
 
 import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
 
-	"github.com/kptm-tools/common/common/enums"
+	"github.com/kptm-tools/common/common/pkg/enums"
 )
 
 const (

@@ -9,4 +9,11 @@ const (
 
 	// Domain represents a target of type domain name
 	Domain TargetType = "Domain"
+
+	// Subdomain represents a target of type subdomain
+	Subdomain TargetType = "Subdomain"
 )
+
+func (tt TargetType) String() string {
+	return string(tt)
+}

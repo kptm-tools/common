@@ -1,6 +1,8 @@
 package enums
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type ToolName string
 
@@ -16,6 +18,10 @@ var ToolSubjectMap = map[ToolName]EventSubjectName{
 	ToolHarvester: HarvesterEventSubject,
 	ToolDNSLookup: DNSLookupEventSubject,
 	ToolNmap:      NmapEventSubject,
+}
+
+func (t ToolName) String() string {
+	return string(t)
 }
 
 func GetToolSubjectName(toolName ToolName) (string, error) {
