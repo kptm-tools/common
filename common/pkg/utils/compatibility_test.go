@@ -28,7 +28,7 @@ func Test_CanRunTool(t *testing.T) {
 			name:           "WhoIs on Subdomain",
 			tool:           enums.ToolWhoIs,
 			hostType:       enums.Subdomain,
-			expectedResult: false,
+			expectedResult: true,
 		},
 		{
 			name:           "WhoIs on IP",
@@ -46,7 +46,7 @@ func Test_CanRunTool(t *testing.T) {
 			name:           "DNSLookup on Subdomain",
 			tool:           enums.ToolDNSLookup,
 			hostType:       enums.Subdomain,
-			expectedResult: false,
+			expectedResult: true,
 		},
 		{
 			name:           "DNSLookup on IP",
@@ -67,7 +67,7 @@ func Test_CanRunTool(t *testing.T) {
 			expectedResult: true,
 		},
 		{
-			name:           "DNSLookup on IP",
+			name:           "Harvester on IP",
 			tool:           enums.ToolHarvester,
 			hostType:       enums.IP,
 			expectedResult: false,
@@ -118,6 +118,7 @@ func Test_ValidateHostForTool(t *testing.T) {
 		name        string
 		value       string
 		tool        enums.ToolName
+		expected    string
 		expectError bool
 	}{
 		// Valid scenarios
@@ -125,12 +126,14 @@ func Test_ValidateHostForTool(t *testing.T) {
 			name:        "Valid Domain for WhoIs",
 			value:       "example.com",
 			tool:        enums.ToolWhoIs,
+			expected:    "example.com",
 			expectError: false,
 		},
 		{
 			name:        "Valid IP for Nmap",
 			value:       "192.168.1.1",
 			tool:        enums.ToolNmap,
+			expected:    "192.168.1.1",
 			expectError: false,
 		},
 		// Invalid scenarios
@@ -138,18 +141,21 @@ func Test_ValidateHostForTool(t *testing.T) {
 			name:        "Subdomain for WhoIs",
 			value:       "www.example.com",
 			tool:        enums.ToolWhoIs,
-			expectError: true,
+			expected:    "example.com",
+			expectError: false,
 		},
 		{
 			name:        "IP for WhoIs",
 			value:       "192.168.1.1",
 			tool:        enums.ToolWhoIs,
+			expected:    "",
 			expectError: true,
 		},
 		{
 			name:        "Invalid Host",
 			value:       "invalid",
 			tool:        enums.ToolNmap,
+			expected:    "",
 			expectError: true,
 		},
 	}
@@ -158,7 +164,7 @@ func Test_ValidateHostForTool(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			// Validate host for the given tool
-			err := ValidateHostForTool(tc.value, tc.tool)
+			target, err := ValidateHostForTool(tc.value, tc.tool)
 
 			// Check error expectation
 			if tc.expectError {
@@ -168,6 +174,9 @@ func Test_ValidateHostForTool(t *testing.T) {
 				assert.NoError(t, err, "Unexpected error for %q with tool %v",
 					tc.value, tc.tool)
 			}
+
+			assert.Equal(t, tc.expected, target,
+				"Target does not match expected")
 		})
 	}
 }

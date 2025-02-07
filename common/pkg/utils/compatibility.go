@@ -19,10 +19,9 @@ func (c *DefaultToolCompatibilityChecker) CanRunTool(toolName enums.ToolName, hc
 
 	switch toolName {
 	case enums.ToolWhoIs:
-		// Only works with top-level domains
-		return hc.Type == enums.Domain
+		return hc.Type == enums.Domain || hc.Type == enums.Subdomain
 	case enums.ToolDNSLookup:
-		return hc.Type == enums.Domain
+		return hc.Type == enums.Domain || hc.Type == enums.Subdomain
 	case enums.ToolHarvester:
 		return hc.Type == enums.Domain || hc.Type == enums.Subdomain
 	case enums.ToolNmap:
@@ -40,21 +39,29 @@ func NewToolCompatibilityChecker() ToolCompatibilityChecker {
 	return &DefaultToolCompatibilityChecker{}
 }
 
-// ValidateHostForTool validates a host value for a specific tool
-func ValidateHostForTool(value string, tool enums.ToolName) error {
+// ValidateHostForTool validates a host value for a specific tool,
+// *including* domain extraction and validation for tools.
+func ValidateHostForTool(value string, tool enums.ToolName) (string, error) {
 	// Classify the host
 	hostClass, err := validation.ClassifyHostValue(value)
 	if err != nil {
-		return fmt.Errorf("failed to classify host value: %w", err)
+		return "", fmt.Errorf("failed to classify host value: %w", err)
 	}
 
 	// Check tool compatibility
 	checker := NewToolCompatibilityChecker()
 	if !checker.CanRunTool(tool, hostClass) {
-		return fmt.Errorf("tool %s cannot run on host type %s",
+		return "", fmt.Errorf("tool %s cannot run on host type %s",
 			tool.String(),
 			hostClass.Type.String())
 	}
+	if tool == enums.ToolDNSLookup || tool == enums.ToolWhoIs || tool == enums.ToolHarvester {
+		domain, err := hostClass.ExtractAndValidateDomain()
+		if err != nil {
+			return "", fmt.Errorf("failed to extract and validate domain %w", err)
+		}
+		return domain, nil
+	}
 
-	return nil
+	return value, nil
 }

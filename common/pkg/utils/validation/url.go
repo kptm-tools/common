@@ -2,8 +2,11 @@ package validation
 
 import (
 	"fmt"
+	"net"
 	"net/url"
 	"strings"
+
+	"golang.org/x/net/publicsuffix"
 )
 
 // IsURL checks if a string is a valid URL
@@ -30,4 +33,17 @@ func NormalizeURL(url string) string {
 		url = "http://" + url
 	}
 	return url
+}
+
+// ExtractTopLevelDomain extracts the top level domain plus one more label
+func ExtractTopLevelDomain(hostName string) (string, error) {
+	return publicsuffix.EffectiveTLDPlusOne(hostName)
+}
+
+func IsValidDomain(domain string) bool {
+	// net.LookupHost validates the domain and resolves it
+	if _, err := net.LookupHost(domain); err != nil {
+		return false
+	}
+	return true
 }
