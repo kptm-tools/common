@@ -35,14 +35,30 @@ type Service struct {
 	Name       string `json:"name"`
 	Version    string `json:"version"`
 	Confidence int    `json:"confidence"`
+	CPE        string `json:"cpe"`
 }
 
 type Vulnerability struct {
-	ID          string   `json:"id"`
-	Type        string   `json:"type"`
-	CVSS        float64  `json:"cvss"`
-	References  []string `json:"reference"`
-	Exploitable bool     `json:"has_exploit"`
+	ID            string   `json:"id"`
+	Type          string   `json:"type"`
+	BaseCVSSScore float64  `json:"cvss"`
+	References    []string `json:"reference"`
+	Exploitable   bool     `json:"has_exploit"`
+
+	Description        string                       `json:"description,omitempty"`
+	Access             enums.AccessType             `json:"access,omitempty"`
+	Complexity         enums.ComplexityType         `json:"complexity,omitempty"`
+	PrivilegesRequired enums.PrivilegesRequiredType `json:"privileges_required"`
+	Likelihood         string                       `json:"likelihood,omitempty"`
+	RiskScore          float64                      `json:"risk_score,omitempty"`
+	ImpactScore        float64                      `json:"impact_score,omitempty"`
+
+	IntegrityImpact    enums.ImpactType   `json:"integrity_impact"`
+	AvailabilityImpact enums.ImpactType   `json:"availabilityImpact"`
+	BaseSeverity       enums.SeverityType `json:"base_severity"`
+
+	Published   string `json:"published"`
+	LastUpdated string `json:"last_updated"`
 }
 
 type SeverityCounts struct {
@@ -50,6 +66,8 @@ type SeverityCounts struct {
 	High     int `json:"high"`
 	Medium   int `json:"medium"`
 	Low      int `json:"low"`
+	None     int `json:"none"`
+	Unknown  int `json:"unknown"`
 }
 
 // ScannedPortsSummary returns a concise summary of the NmapResult for logging purposes.
@@ -108,7 +126,7 @@ func (r *NmapResult) GetSeverityPerTypeMap() map[string]int {
 
 	for _, port := range r.ScannedPorts {
 		for _, vuln := range port.Vulnerabilities {
-			currentSeverity := MapCVSS(vuln.CVSS)
+			currentSeverity := MapCVSS(vuln.BaseCVSSScore).Int()
 			if maxSeverity, exists := severityMap[vuln.Type]; exists {
 				if currentSeverity > maxSeverity {
 					severityMap[vuln.Type] = currentSeverity
@@ -147,40 +165,45 @@ func GetSeverityCounts(vulns []Vulnerability) SeverityCounts {
 	counts := SeverityCounts{}
 
 	for _, vuln := range vulns {
-		switch MapCVSS(vuln.CVSS) {
-		case SeverityLow:
+		switch MapCVSS(vuln.BaseCVSSScore) {
+		case enums.SeverityTypeNone:
+			counts.None++
+		case enums.SeverityTypeLow:
 			counts.Low++
-		case SeverityMedium:
+		case enums.SeverityTypeMedium:
 			counts.Medium++
-		case SeverityHigh:
+		case enums.SeverityTypeHigh:
 			counts.High++
-		case SeverityCritical:
+		case enums.SeverityTypeCritical:
 			counts.Critical++
 		default:
-			counts.Critical++
+			counts.Unknown++
 		}
 	}
 
 	return counts
 }
 
-func MapCVSS(cvss float64) int {
+func MapCVSS(cvss float64) enums.SeverityType {
 	// CVSS thresholds
 	const (
+		none      = 0.0
 		lowMax    = 4.0
 		mediumMax = 7.0
 		highMax   = 9.0
 	)
 
 	switch {
+	case cvss == none:
+		return enums.SeverityTypeNone
 	case cvss < lowMax:
-		return SeverityLow
+		return enums.SeverityTypeLow
 	case cvss < mediumMax:
-		return SeverityMedium
+		return enums.SeverityTypeMedium
 	case cvss < highMax:
-		return SeverityHigh
+		return enums.SeverityTypeHigh
 	default:
-		return SeverityCritical
+		return enums.SeverityTypeCritical
 	}
 }
 
