@@ -43,15 +43,16 @@ type Vulnerability struct {
 	Type          string   `json:"type"`
 	BaseCVSSScore float64  `json:"cvss"`
 	References    []string `json:"reference"`
-	Exploitable   bool     `json:"has_exploit"`
 
 	Description        string                       `json:"description,omitempty"`
 	Access             enums.AccessType             `json:"access,omitempty"`
 	Complexity         enums.ComplexityType         `json:"complexity,omitempty"`
 	PrivilegesRequired enums.PrivilegesRequiredType `json:"privileges_required"`
-	Likelihood         string                       `json:"likelihood,omitempty"`
+	Likelihood         enums.LikelyhoodType         `json:"likelihood,omitempty"`
 	RiskScore          float64                      `json:"risk_score,omitempty"`
 	ImpactScore        float64                      `json:"impact_score,omitempty"`
+
+	Exploit Exploit `json:"exploit"`
 
 	IntegrityImpact    enums.ImpactType   `json:"integrity_impact"`
 	AvailabilityImpact enums.ImpactType   `json:"availabilityImpact"`
@@ -59,6 +60,11 @@ type Vulnerability struct {
 
 	Published   string `json:"published"`
 	LastUpdated string `json:"last_updated"`
+}
+
+type Exploit struct {
+	Score          float64                  `json:"exploit_score"`
+	Exploitability enums.ExploitabilityType `json:"exploitability"`
 }
 
 type SeverityCounts struct {
