@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"time"
 
 	"github.com/kptm-tools/common/common/pkg/enums"
 )
@@ -58,8 +59,8 @@ type Vulnerability struct {
 	AvailabilityImpact enums.ImpactType   `json:"availabilityImpact"`
 	BaseSeverity       enums.SeverityType `json:"base_severity"`
 
-	Published   string `json:"published"`
-	LastUpdated string `json:"last_updated"`
+	Published   time.Time `json:"published"`
+	LastUpdated time.Time `json:"last_updated"`
 }
 
 type Exploit struct {
