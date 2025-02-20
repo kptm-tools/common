@@ -91,7 +91,7 @@ type SeverityCounts struct {
 func (r *NmapResult) ScannedPortsSummary() string {
 	severityCounts := GetSeverityCounts(r.GetAllVulnerabilites())
 	return fmt.Sprintf(
-		"Host %s (%s), Ports: %d, Vulnerabilities (Critical: %d, High %d, Medium: %d, Low: %d), OS: %s",
+		"Host %s (%s), Ports: %d, Vulnerabilities (Critical: %d, High %d, Medium: %d, Low: %d), OS: %+v",
 		r.HostName,
 		r.HostAddress,
 		len(r.ScannedPorts),
@@ -110,7 +110,13 @@ func (r *NmapResult) LogValue() slog.Value {
 		slog.String("host_name", r.HostName),
 		slog.String("host_address", r.HostAddress),
 		slog.Int("ports_scanned", len(r.ScannedPorts)),
-		slog.String("most_likely_os", r.MostLikelyOS),
+		slog.Group("most_likely_os",
+			slog.String("name", r.MostLikelyOS.Name),
+			slog.Int("accuracy", r.MostLikelyOS.Accuracy),
+			slog.String("family", r.MostLikelyOS.Family),
+			slog.String("fingerprint", r.MostLikelyOS.FingerPrint),
+			slog.String("cpe", r.MostLikelyOS.CPE),
+			slog.Int("vulnerabilities", len(r.MostLikelyOS.Vulnerabilities))),
 		slog.Int("vulnerabilities_critical", severityCounts.Critical),
 		slog.Int("vulnerabilities_high", severityCounts.High),
 		slog.Int("vulnerabilities_medium", severityCounts.Medium),
@@ -171,18 +177,11 @@ func (r *NmapResult) GetToolName() enums.ToolName {
 	return enums.ToolNmap
 }
 
-func (v *Vulnerability) BuildVulnersReferences() {
-	if v.Type != "" && v.ID != "" {
-		reference := buildVulnersReference(v.ID, v.Type)
-		v.References = append(v.References, reference)
-	}
-}
-
 func GetSeverityCounts(vulns []Vulnerability) SeverityCounts {
 	counts := SeverityCounts{}
 
 	for _, vuln := range vulns {
-		switch MapCVSS(vuln.BaseCVSSScore) {
+		switch vuln.BaseSeverity {
 		case enums.SeverityTypeNone:
 			counts.None++
 		case enums.SeverityTypeLow:
@@ -222,8 +221,4 @@ func MapCVSS(cvss float64) enums.SeverityType {
 	default:
 		return enums.SeverityTypeCritical
 	}
-}
-
-func buildVulnersReference(id, vulnType string) string {
-	return fmt.Sprintf("https://vulners.com/%s/%s", vulnType, id)
 }
