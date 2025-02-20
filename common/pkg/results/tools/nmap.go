@@ -20,7 +20,17 @@ type NmapResult struct {
 	HostName     string     `json:"host_name"`
 	HostAddress  string     `json:"host_address"`
 	ScannedPorts []PortData `json:"scanned_ports"`
-	MostLikelyOS string     `json:"most_likely_os"`
+	MostLikelyOS OSData     `json:"most_likely_os"`
+}
+
+type OSData struct {
+	Name            string          `json:"name"`
+	Accuracy        int             `json:"accuracy"`
+	Family          string          `json:"family"`
+	Type            string          `json:"type"`
+	FingerPrint     string          `json:"fingerprint"`
+	CPE             string          `json:"cpe"`
+	Vulnerabilities []Vulnerability `json:"vulnerabilities"`
 }
 
 type PortData struct {
