@@ -1,51 +1,10 @@
 package tools
 
-import "testing"
+import (
+	"testing"
 
-func Test_buildVulnersReference(t *testing.T) {
-	testCases := []struct {
-		name     string
-		input    Vulnerability
-		expected string
-	}{
-		{
-			name: "Vulnerability with ID and Type",
-			input: Vulnerability{
-				ID:   "ID123",
-				Type: "cve",
-			},
-			expected: "https://vulners.com/cve/ID123",
-		},
-		{
-			name: "Vulnerability with only ID",
-			input: Vulnerability{
-				ID: "ID123",
-			},
-			expected: "https://vulners.com//ID123",
-		},
-		{
-			name: "Vulnerability with only Type",
-			input: Vulnerability{
-				Type: "cve",
-			},
-			expected: "https://vulners.com/cve/",
-		},
-		{
-			name:     "Vulnerability without ID or Type",
-			input:    Vulnerability{},
-			expected: "https://vulners.com//",
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			res := buildVulnersReference(tc.input.ID, tc.input.Type)
-			if res != tc.expected {
-				t.Errorf("Expected `%s`, got `%s`", tc.expected, res)
-			}
-		})
-	}
-}
+	"github.com/kptm-tools/common/common/pkg/enums"
+)
 
 func Test_GetSeverityCounts(t *testing.T) {
 	testCases := []struct {
@@ -53,29 +12,28 @@ func Test_GetSeverityCounts(t *testing.T) {
 		input    []Vulnerability
 		expected SeverityCounts
 	}{
-
 		{
 			name: "Vulnerabilities with CVSS within range",
 			input: []Vulnerability{
 				{
-					ID:   "ID123",
-					Type: "cve",
-					CVSS: 0.9,
+					ID:           "ID123",
+					Type:         "cve",
+					BaseSeverity: enums.SeverityTypeLow,
 				},
 				{
-					ID:   "ID123",
-					Type: "cve",
-					CVSS: 4.9,
+					ID:           "ID123",
+					Type:         "cve",
+					BaseSeverity: enums.SeverityTypeMedium,
 				},
 				{
-					ID:   "ID123",
-					Type: "cve",
-					CVSS: 9.9,
+					ID:           "ID123",
+					Type:         "cve",
+					BaseSeverity: enums.SeverityTypeCritical,
 				},
 				{
-					ID:   "ID123",
-					Type: "cve",
-					CVSS: 7.9,
+					ID:           "ID123",
+					Type:         "cve",
+					BaseSeverity: enums.SeverityTypeHigh,
 				},
 			},
 			expected: SeverityCounts{
@@ -86,75 +44,40 @@ func Test_GetSeverityCounts(t *testing.T) {
 			},
 		},
 		{
-			name: "Vulnerabilities with CVSS outside range",
+			name: "Vulnerabilities with Unknown severities",
 			input: []Vulnerability{
 				{
-					ID:   "ID123",
-					Type: "cve",
-					CVSS: 0.9,
+					ID:           "ID123",
+					Type:         "cve",
+					BaseSeverity: enums.SeverityTypeLow,
 				},
 				{
-					ID:   "ID123",
-					Type: "cve",
-					CVSS: 4.9,
+					ID:           "ID123",
+					Type:         "cve",
+					BaseSeverity: enums.SeverityTypeMedium,
 				},
 				{
-					ID:   "ID123",
-					Type: "cve",
-					CVSS: 9.9,
+					ID:           "ID123",
+					Type:         "cve",
+					BaseSeverity: enums.SeverityTypeCritical,
 				},
 				{
-					ID:   "ID123",
-					Type: "cve",
-					CVSS: 11.9,
+					ID:           "ID123",
+					Type:         "cve",
+					BaseSeverity: enums.SeverityTypeUnknown,
 				},
 				{
-					ID:   "ID123",
-					Type: "cve",
-					CVSS: 12.9,
+					ID:           "ID123",
+					Type:         "cve",
+					BaseSeverity: enums.SeverityTypeUnknown,
 				},
 			},
 			expected: SeverityCounts{
 				Low:      1,
 				Medium:   1,
 				High:     0,
-				Critical: 3,
-			},
-		},
-		{
-			name: "Vulnerabilities with negative CVSS outside range",
-			input: []Vulnerability{
-				{
-					ID:   "ID123",
-					Type: "cve",
-					CVSS: 0.9,
-				},
-				{
-					ID:   "ID123",
-					Type: "cve",
-					CVSS: 4.9,
-				},
-				{
-					ID:   "ID123",
-					Type: "cve",
-					CVSS: 9.9,
-				},
-				{
-					ID:   "ID123",
-					Type: "cve",
-					CVSS: -11.9,
-				},
-				{
-					ID:   "ID123",
-					Type: "cve",
-					CVSS: -12.9,
-				},
-			},
-			expected: SeverityCounts{
-				Low:      3,
-				Medium:   1,
-				High:     0,
 				Critical: 1,
+				Unknown:  2,
 			},
 		},
 		{
@@ -180,7 +103,6 @@ func Test_GetSeverityCounts(t *testing.T) {
 }
 
 func Test_TotalVulnerabilities(t *testing.T) {
-
 	testCases := []struct {
 		name     string
 		input    NmapResult
@@ -201,7 +123,7 @@ func Test_TotalVulnerabilities(t *testing.T) {
 			input: NmapResult{
 				ScannedPorts: []PortData{
 					{ID: 80, Vulnerabilities: []Vulnerability{
-						{ID: "CVE-1234", CVSS: 5.0},
+						{ID: "CVE-1234", BaseCVSSScore: 5.0},
 					}},
 					{ID: 443, Vulnerabilities: []Vulnerability{}},
 				},
@@ -213,11 +135,11 @@ func Test_TotalVulnerabilities(t *testing.T) {
 			input: NmapResult{
 				ScannedPorts: []PortData{
 					{ID: 80, Vulnerabilities: []Vulnerability{
-						{ID: "CVE-1234", CVSS: 5.0},
-						{ID: "CVE-5678", CVSS: 7.5},
+						{ID: "CVE-1234", BaseCVSSScore: 5.0},
+						{ID: "CVE-5678", BaseCVSSScore: 7.5},
 					}},
 					{ID: 443, Vulnerabilities: []Vulnerability{
-						{ID: "CVE-91011", CVSS: 9.8},
+						{ID: "CVE-91011", BaseCVSSScore: 9.8},
 					}},
 				},
 			},
@@ -246,13 +168,13 @@ func TestGetSeverityPerTypeMap(t *testing.T) {
 	result := NmapResult{
 		ScannedPorts: []PortData{
 			{Vulnerabilities: []Vulnerability{
-				{Type: "Tipo A", CVSS: 5.0},
-				{Type: "Tipo B", CVSS: 3.0},
-				{Type: "Tipo A", CVSS: 9.5}, // Higher severity for Tipo A
+				{Type: "Tipo A", BaseCVSSScore: 5.0},
+				{Type: "Tipo B", BaseCVSSScore: 3.0},
+				{Type: "Tipo A", BaseCVSSScore: 9.5}, // Higher severity for Tipo A
 			}},
 			{Vulnerabilities: []Vulnerability{
-				{Type: "Tipo C", CVSS: 4.0},
-				{Type: "Tipo B", CVSS: 7.0}, // Higher severity for Tipo B
+				{Type: "Tipo C", BaseCVSSScore: 4.0},
+				{Type: "Tipo B", BaseCVSSScore: 7.0}, // Higher severity for Tipo B
 			}},
 		},
 	}

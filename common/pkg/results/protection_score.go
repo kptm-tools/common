@@ -38,7 +38,7 @@ func CalculateProtectionScore(
 	vulnCounts := tools.GetSeverityCounts(vulnResults)
 
 	// Calculate penalties
-	if nmapResult.MostLikelyOS != "" {
+	if nmapResult.MostLikelyOS.Accuracy > 1 {
 		osDetectionPenalty = 10.0
 	}
 
