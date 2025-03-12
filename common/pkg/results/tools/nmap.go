@@ -69,6 +69,8 @@ type Vulnerability struct {
 	AvailabilityImpact enums.ImpactType   `json:"availabilityImpact"`
 	BaseSeverity       enums.SeverityType `json:"base_severity"`
 
+	VendorComments []VendorComment `json:"vendor_comments,omitempty"`
+
 	Published   time.Time `json:"published"`
 	LastUpdated time.Time `json:"last_updated"`
 }
@@ -76,6 +78,12 @@ type Vulnerability struct {
 type Exploit struct {
 	Score          float64                  `json:"exploit_score"`
 	Exploitability enums.ExploitabilityType `json:"exploitability"`
+}
+
+type VendorComment struct {
+	Organization string    `json:"organization"`
+	Comment      string    `json:"comment"`
+	LastModified time.Time `json:"last_modified"`
 }
 
 type SeverityCounts struct {
