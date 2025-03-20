@@ -11,6 +11,7 @@ const (
 	StatusCompleted             // The scan completed successfully.
 	StatusFailed                // The scan failed due to an error.
 	StatusCancelled             // The scan was cancelled before completion.
+	StatusScheduled             // The scan is scheduled to run in the future.
 )
 
 var statusStrings = map[ScanStatus]string{
