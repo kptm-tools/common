@@ -19,6 +19,7 @@ var statusStrings = map[ScanStatus]string{
 	StatusCompleted:  "Completed",
 	StatusFailed:     "Failed",
 	StatusCancelled:  "Cancelled",
+	StatusScheduled:  "Scheduled",
 }
 
 func (ss ScanStatus) String() string {
