@@ -16,7 +16,6 @@ type ToolCompatibilityChecker interface {
 type DefaultToolCompatibilityChecker struct{}
 
 func (c *DefaultToolCompatibilityChecker) CanRunTool(toolName enums.ToolName, hc *validation.HostClassification) bool {
-
 	switch toolName {
 	case enums.ToolWhoIs:
 		return hc.Type == enums.Domain || hc.Type == enums.Subdomain
@@ -56,7 +55,7 @@ func ValidateHostForTool(value string, tool enums.ToolName) (string, error) {
 			hostClass.Type.String())
 	}
 	if tool == enums.ToolDNSLookup || tool == enums.ToolWhoIs || tool == enums.ToolHarvester {
-		domain, err := hostClass.ExtractAndValidateDomain()
+		domain, err := hostClass.GetBaseDomain()
 		if err != nil {
 			return "", fmt.Errorf("failed to extract and validate domain %w", err)
 		}
