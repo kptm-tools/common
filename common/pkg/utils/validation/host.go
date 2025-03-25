@@ -75,21 +75,9 @@ func ClassifyHostValue(value string) (*HostClassification, error) {
 }
 
 func (hc *HostClassification) GetAndValidateBaseDomain() (string, error) {
-	var domain string
-	var err error
-
-	hostName, err := ExtractHostName(hc.NormalizedValue)
+	domain, err := hc.GetBaseDomain()
 	if err != nil {
-		return "", fmt.Errorf("failed to extract host name: %w", err)
-	}
-
-	if hc.Type == enums.Subdomain {
-		domain, err = ExtractTopLevelDomain(hostName)
-		if err != nil {
-			return "", fmt.Errorf("failed to extract top level domain: %w", err)
-		}
-	} else {
-		domain = hostName
+		return "", fmt.Errorf("failed to get base domain: %w", err)
 	}
 
 	if !IsValidDomain(domain) {
