@@ -33,7 +33,7 @@ func CalculateProtectionScore(
 	openPorts := len(nmapResult.GetOpenPorts())
 
 	// Extract vulnerability data
-	vulners := nmapResult.GetAllVulnerabilites()
+	vulners := nmapResult.GetAllVulnerabilities()
 	vulnResults = append(vulnResults, vulners...)
 	vulnCounts := tools.GetSeverityCounts(vulnResults)
 

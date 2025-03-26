@@ -97,7 +97,7 @@ type SeverityCounts struct {
 
 // ScannedPortsSummary returns a concise summary of the NmapResult for logging purposes.
 func (r *NmapResult) ScannedPortsSummary() string {
-	severityCounts := GetSeverityCounts(r.GetAllVulnerabilites())
+	severityCounts := GetSeverityCounts(r.GetAllVulnerabilities())
 	return fmt.Sprintf(
 		"Host %s (%s), Ports: %d, Vulnerabilities (Critical: %d, High %d, Medium: %d, Low: %d), OS: %+v",
 		r.HostName,
@@ -113,7 +113,7 @@ func (r *NmapResult) ScannedPortsSummary() string {
 
 // LogValue creates a standard structured log representation for logging.
 func (r *NmapResult) LogValue() slog.Value {
-	severityCounts := GetSeverityCounts(r.GetAllVulnerabilites())
+	severityCounts := GetSeverityCounts(r.GetAllVulnerabilities())
 	return slog.GroupValue(
 		slog.String("host_name", r.HostName),
 		slog.String("host_address", r.HostAddress),
@@ -140,7 +140,7 @@ func (r *NmapResult) ToJSON() string {
 	return string(data)
 }
 
-func (r *NmapResult) GetAllVulnerabilites() []Vulnerability {
+func (r *NmapResult) GetAllVulnerabilities() []Vulnerability {
 	var vulns []Vulnerability
 	for _, portData := range r.ScannedPorts {
 		vulns = append(vulns, portData.Vulnerabilities...)
@@ -149,7 +149,7 @@ func (r *NmapResult) GetAllVulnerabilites() []Vulnerability {
 }
 
 func (r *NmapResult) TotalVulnerabilities() int {
-	return len(r.GetAllVulnerabilites())
+	return len(r.GetAllVulnerabilities())
 }
 
 func (r *NmapResult) GetSeverityPerTypeMap() map[enums.WeaknessType]int {
