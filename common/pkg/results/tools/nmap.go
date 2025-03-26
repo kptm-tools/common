@@ -50,10 +50,10 @@ type Service struct {
 }
 
 type Vulnerability struct {
-	ID            string   `json:"id"`
-	Type          string   `json:"type"`
-	BaseCVSSScore float64  `json:"cvss"`
-	References    []string `json:"reference"`
+	ID            string             `json:"id"`
+	Type          enums.WeaknessType `json:"type"`
+	BaseCVSSScore float64            `json:"cvss"`
+	References    []string           `json:"reference"`
 
 	Description        string                       `json:"description,omitempty"`
 	Access             enums.AccessType             `json:"access,omitempty"`
@@ -152,8 +152,8 @@ func (r *NmapResult) TotalVulnerabilities() int {
 	return len(r.GetAllVulnerabilites())
 }
 
-func (r *NmapResult) GetSeverityPerTypeMap() map[string]int {
-	severityMap := make(map[string]int)
+func (r *NmapResult) GetSeverityPerTypeMap() map[enums.WeaknessType]int {
+	severityMap := make(map[enums.WeaknessType]int)
 
 	for _, port := range r.ScannedPorts {
 		for _, vuln := range port.Vulnerabilities {
