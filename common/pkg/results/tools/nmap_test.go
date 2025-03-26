@@ -17,22 +17,22 @@ func Test_GetSeverityCounts(t *testing.T) {
 			input: []Vulnerability{
 				{
 					ID:           "ID123",
-					Type:         "cve",
+					Type:         enums.WeaknessSSRF,
 					BaseSeverity: enums.SeverityTypeLow,
 				},
 				{
 					ID:           "ID123",
-					Type:         "cve",
+					Type:         enums.WeaknessBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeMedium,
 				},
 				{
 					ID:           "ID123",
-					Type:         "cve",
+					Type:         enums.WeaknessBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeCritical,
 				},
 				{
 					ID:           "ID123",
-					Type:         "cve",
+					Type:         enums.WeaknessBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeHigh,
 				},
 			},
@@ -48,27 +48,27 @@ func Test_GetSeverityCounts(t *testing.T) {
 			input: []Vulnerability{
 				{
 					ID:           "ID123",
-					Type:         "cve",
+					Type:         enums.WeaknessBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeLow,
 				},
 				{
 					ID:           "ID123",
-					Type:         "cve",
+					Type:         enums.WeaknessBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeMedium,
 				},
 				{
 					ID:           "ID123",
-					Type:         "cve",
+					Type:         enums.WeaknessInjection,
 					BaseSeverity: enums.SeverityTypeCritical,
 				},
 				{
 					ID:           "ID123",
-					Type:         "cve",
+					Type:         enums.WeaknessInjection,
 					BaseSeverity: enums.SeverityTypeUnknown,
 				},
 				{
 					ID:           "ID123",
-					Type:         "cve",
+					Type:         enums.WeaknessInjection,
 					BaseSeverity: enums.SeverityTypeUnknown,
 				},
 			},
@@ -168,21 +168,21 @@ func TestGetSeverityPerTypeMap(t *testing.T) {
 	result := NmapResult{
 		ScannedPorts: []PortData{
 			{Vulnerabilities: []Vulnerability{
-				{Type: "Tipo A", BaseCVSSScore: 5.0},
-				{Type: "Tipo B", BaseCVSSScore: 3.0},
-				{Type: "Tipo A", BaseCVSSScore: 9.5}, // Higher severity for Tipo A
+				{Type: enums.WeaknessInjection, BaseCVSSScore: 5.0},
+				{Type: enums.WeaknessSecurityLoggingAndMonitoringFailures, BaseCVSSScore: 3.0},
+				{Type: enums.WeaknessBrokenAccessControl, BaseCVSSScore: 9.5}, // Higher severity for Tipo A
 			}},
 			{Vulnerabilities: []Vulnerability{
-				{Type: "Tipo C", BaseCVSSScore: 4.0},
-				{Type: "Tipo B", BaseCVSSScore: 7.0}, // Higher severity for Tipo B
+				{Type: enums.WeaknessBrokenAccessControl, BaseCVSSScore: 4.0},
+				{Type: enums.WeaknessInjection, BaseCVSSScore: 7.0}, // Higher severity for Tipo B
 			}},
 		},
 	}
 
-	expected := map[string]int{
-		"Tipo A": SeverityCritical,
-		"Tipo B": SeverityHigh,
-		"Tipo C": SeverityMedium,
+	expected := map[enums.WeaknessType]int{
+		enums.WeaknessBrokenAccessControl:                  SeverityCritical,
+		enums.WeaknessInjection:                            SeverityHigh,
+		enums.WeaknessSecurityLoggingAndMonitoringFailures: SeverityLow,
 	}
 
 	actual := result.GetSeverityPerTypeMap()
