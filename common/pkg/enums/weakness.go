@@ -14,6 +14,7 @@ const (
 	WeaknessInsecureDesign
 	WeaknessSecurityMisconfiguration
 	WeaknessOther
+	WeaknessNoInfo
 )
 
 var weaknessStrings = map[WeaknessType]string{
@@ -28,6 +29,7 @@ var weaknessStrings = map[WeaknessType]string{
 	WeaknessInsecureDesign:                          "Insecure Design",
 	WeaknessSecurityMisconfiguration:                "Security Misconfiguration",
 	WeaknessOther:                                   "Other",
+	WeaknessNoInfo:                                  "No Information Available",
 }
 
 func (w WeaknessType) String() string {
