@@ -1,5 +1,7 @@
 package enums
 
+import "strings"
+
 type WeaknessType int
 
 const (
@@ -243,4 +245,16 @@ func GetWeaknessType(cweID int) WeaknessType {
 		return weakness
 	}
 	return WeaknessOther
+}
+
+// ParseWeaknessFromString takes a weakness string and returns the corresponding WeaknessType.
+// It performs a case-insensitive search.
+func ParseWeaknessFromString(weaknessStr string) (WeaknessType, bool) {
+	lowerStr := strings.ToLower(weaknessStr)
+	for wt, str := range weaknessStrings {
+		if strings.ToLower(str) == lowerStr {
+			return wt, true
+		}
+	}
+	return WeaknessNoInfo, false
 }
