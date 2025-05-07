@@ -258,3 +258,13 @@ func ParseWeaknessFromString(weaknessStr string) (WeaknessType, bool) {
 	}
 	return WeaknessNoInfo, false
 }
+
+var AllWeaknessTypes []WeaknessType
+
+func init() {
+
+	for i := 0; i <= int(WeaknessNoInfo); i++ {
+		AllWeaknessTypes = append(AllWeaknessTypes, WeaknessType(i))
+	}
+}
+
