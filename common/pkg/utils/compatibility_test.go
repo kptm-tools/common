@@ -220,7 +220,7 @@ func Test_ClassifyValidationErrorCode(t *testing.T) {
 			got := ClassifyValidationErrorCode(tc.value)
 
 			// Check error expectation
-			assert.Equal(t, tc.want, got, "Expected ErorCode %s, got %s", string(tc.want), string(got))
+			assert.Equal(t, tc.want, got, "Expected ErrorCode %s, got %s", string(tc.want), string(got))
 		})
 	}
 }
