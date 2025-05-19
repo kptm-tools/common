@@ -15,7 +15,7 @@ type ToolIncompatibleError struct {
 }
 
 func (e *ToolIncompatibleError) Error() string {
-	return fmt.Sprintf("tools '%s' is incompatible with host type '%s': %s", e.ToolName, e.HostType, e.Reason)
+	return fmt.Sprintf("tool '%s' is incompatible with host type '%s': %s", e.ToolName, e.HostType, e.Reason)
 }
 
 // NewToolIncompatibleError creates a new ToolIncompatibleError.
