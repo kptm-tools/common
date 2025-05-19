@@ -3,6 +3,7 @@ package utils
 import (
 	"testing"
 
+	"github.com/kptm-tools/common/common/pkg/customerrors"
 	"github.com/kptm-tools/common/common/pkg/enums"
 	"github.com/kptm-tools/common/common/pkg/utils/validation"
 	"github.com/stretchr/testify/assert"
@@ -108,55 +109,60 @@ func Test_CanRunTool(t *testing.T) {
 			assert.Equal(t, tc.expectedResult, result,
 				"Unexpected compatibility for tool %v on host type %v",
 				tc.tool, tc.hostType)
-
 		})
 	}
 }
 
 func Test_ValidateHostForTool(t *testing.T) {
 	testCases := []struct {
-		name        string
-		value       string
-		tool        enums.ToolName
-		expected    string
-		expectError bool
+		name                   string
+		value                  string
+		tool                   enums.ToolName
+		expected               string
+		expectError            bool
+		expectIncompatibleTool bool
 	}{
 		// Valid scenarios
 		{
-			name:        "Valid Domain for WhoIs",
-			value:       "example.com",
-			tool:        enums.ToolWhoIs,
-			expected:    "example.com",
-			expectError: false,
+			name:                   "Valid Domain for WhoIs",
+			value:                  "example.com",
+			tool:                   enums.ToolWhoIs,
+			expected:               "example.com",
+			expectError:            false,
+			expectIncompatibleTool: false,
 		},
 		{
-			name:        "Valid IP for Nmap",
-			value:       "192.168.1.1",
-			tool:        enums.ToolNmap,
-			expected:    "192.168.1.1",
-			expectError: false,
+			name:                   "Valid IP for Nmap",
+			value:                  "192.168.1.1",
+			tool:                   enums.ToolNmap,
+			expected:               "192.168.1.1",
+			expectError:            false,
+			expectIncompatibleTool: false,
 		},
 		// Invalid scenarios
 		{
-			name:        "Subdomain for WhoIs",
-			value:       "www.example.com",
-			tool:        enums.ToolWhoIs,
-			expected:    "example.com",
-			expectError: false,
+			name:                   "Subdomain for WhoIs",
+			value:                  "www.example.com",
+			tool:                   enums.ToolWhoIs,
+			expected:               "example.com",
+			expectError:            false,
+			expectIncompatibleTool: false,
 		},
 		{
-			name:        "IP for WhoIs",
-			value:       "192.168.1.1",
-			tool:        enums.ToolWhoIs,
-			expected:    "",
-			expectError: true,
+			name:                   "IP for WhoIs",
+			value:                  "192.168.1.1",
+			tool:                   enums.ToolWhoIs,
+			expected:               "",
+			expectError:            true,
+			expectIncompatibleTool: true,
 		},
 		{
-			name:        "Invalid Host",
-			value:       "invalid",
-			tool:        enums.ToolNmap,
-			expected:    "",
-			expectError: true,
+			name:                   "Invalid Host",
+			value:                  "invalid",
+			tool:                   enums.ToolNmap,
+			expected:               "",
+			expectError:            true,
+			expectIncompatibleTool: false,
 		},
 	}
 
@@ -170,6 +176,12 @@ func Test_ValidateHostForTool(t *testing.T) {
 			if tc.expectError {
 				assert.Error(t, err, "Expected an error for %q with tool %v",
 					tc.value, tc.tool)
+				if tc.expectIncompatibleTool {
+					var errIncompatibleTool *customerrors.ToolIncompatibleError
+					assert.ErrorAs(t, err, &errIncompatibleTool, "Expected an incompatible tool error for %q with tool %v",
+						tc.value, tc.tool)
+
+				}
 			} else {
 				assert.NoError(t, err, "Unexpected error for %q with tool %v",
 					tc.value, tc.tool)
