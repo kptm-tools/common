@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/kptm-tools/common/common/pkg/customerrors"
@@ -189,6 +190,37 @@ func Test_ValidateHostForTool(t *testing.T) {
 
 			assert.Equal(t, tc.expected, target,
 				"Target does not match expected")
+		})
+	}
+}
+
+func Test_ClassifyValidationErrorCode(t *testing.T) {
+	testCases := []struct {
+		name  string
+		value error
+		want  enums.ErrorCode
+	}{
+		// Valid scenarios
+		{
+			name:  "Incompatible Tool Error",
+			value: customerrors.NewToolIncompatibleError(enums.ToolDNSLookup, "IP"),
+			want:  enums.ToolSkippedError,
+		},
+		{
+			name:  "Any Tool Error",
+			value: errors.New("An unexpected error occurred"),
+			want:  enums.ValidationError,
+		},
+	}
+
+	// Run each test case
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// Validate host for the given tool
+			got := ClassifyValidationErrorCode(tc.value)
+
+			// Check error expectation
+			assert.Equal(t, tc.want, got, "Expected ErorCode %s, got %s", string(tc.want), string(got))
 		})
 	}
 }

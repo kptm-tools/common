@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/kptm-tools/common/common/pkg/customerrors"
@@ -62,4 +63,12 @@ func ValidateHostForTool(value string, tool enums.ToolName) (string, error) {
 	}
 
 	return value, nil
+}
+
+func ClassifyValidationErrorCode(err error) enums.ErrorCode {
+	var errIncompatibleTool *customerrors.ToolIncompatibleError
+	if errors.As(err, &errIncompatibleTool) {
+		return enums.ToolSkippedError
+	}
+	return enums.ValidationError
 }
