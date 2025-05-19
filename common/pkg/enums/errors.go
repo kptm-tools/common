@@ -17,4 +17,7 @@ const (
 
 	// TimeoutError occurs when an operation exceeds the allowed time to complete.
 	TimeoutError ErrorCode = "TIMEOUT_ERROR"
+
+	// ToolSkippedError occurs when a tool is skipped due to an invalid target type.
+	ToolSkippedError ErrorCode = "TOOL_SKIPPED"
 )

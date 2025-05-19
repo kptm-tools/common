@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 
+	"github.com/kptm-tools/common/common/pkg/customerrors"
 	"github.com/kptm-tools/common/common/pkg/enums"
 	"github.com/kptm-tools/common/common/pkg/utils/validation"
 )
@@ -44,15 +45,13 @@ func ValidateHostForTool(value string, tool enums.ToolName) (string, error) {
 	// Classify the host
 	hostClass, err := validation.ClassifyHostValue(value)
 	if err != nil {
-		return "", fmt.Errorf("failed to classify host value: %w", err)
+		return "", fmt.Errorf("failed to classify host value '%s': %w", value, err)
 	}
 
 	// Check tool compatibility
 	checker := NewToolCompatibilityChecker()
 	if !checker.CanRunTool(tool, hostClass) {
-		return "", fmt.Errorf("tool %s cannot run on host type %s",
-			tool.String(),
-			hostClass.Type.String())
+		return "", customerrors.NewToolIncompatibleError(tool, hostClass.Type.String())
 	}
 	if tool == enums.ToolDNSLookup || tool == enums.ToolWhoIs || tool == enums.ToolHarvester {
 		domain, err := hostClass.GetBaseDomain()
