@@ -73,6 +73,10 @@ type Vulnerability struct {
 
 	Published   time.Time `json:"published"`
 	LastUpdated time.Time `json:"last_updated"`
+
+	EPSSScore      float64   `json:"epss_score,omitempty"`
+	EPSSPercentile float64   `json:"epss_percentile,omitempty"`
+	EPSSDate       time.Time `json:"epss_date,omitempty"`
 }
 
 type Exploit struct {
