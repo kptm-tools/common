@@ -49,11 +49,27 @@ type Service struct {
 	CPE        string `json:"cpe"`
 }
 
+type CVSSMetric struct {
+	Version             string
+	BaseScore           float64
+	ImpactScore         float64
+	Severity            enums.SeverityType
+	Access              enums.AccessType
+	Complexity          enums.ComplexityType
+	PrivilegesRequired  enums.PrivilegesRequiredType
+	IntegrityImpact     enums.ImpactType
+	AvailabilityImpact  enums.ImpactType
+	ExploitabilityScore float64
+	Exploitability      enums.ExploitabilityType
+}
+
 type Vulnerability struct {
 	ID            string             `json:"id"`
 	Type          enums.WeaknessType `json:"type"`
 	BaseCVSSScore float64            `json:"cvss"`
 	References    []string           `json:"reference"`
+
+	Metrics []CVSSMetric `json:"metrics"`
 
 	Description        string                       `json:"description,omitempty"`
 	Access             enums.AccessType             `json:"access,omitempty"`
