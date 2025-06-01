@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/kptm-tools/common/common/pkg/enums"
 )
 
@@ -50,7 +51,11 @@ type Service struct {
 }
 
 type Vulnerability struct {
-	ID            string             `json:"id"`
+	ID     uuid.UUID `json:"id"`
+	HostID uuid.UUID `json:"host_id"`
+	ScanID uuid.UUID `json:"scan_id"`
+	CveID  string    `json:"cve_id"`
+
 	Type          enums.WeaknessType `json:"type"`
 	BaseCVSSScore float64            `json:"cvss"`
 	References    []string           `json:"reference"`
@@ -69,6 +74,7 @@ type Vulnerability struct {
 	AvailabilityImpact enums.ImpactType   `json:"availabilityImpact"`
 	BaseSeverity       enums.SeverityType `json:"base_severity"`
 
+	AnalystComment string          `json:"analyst_comment,omitempty"`
 	VendorComments []VendorComment `json:"vendor_comments,omitempty"`
 
 	Published   time.Time `json:"published"`
