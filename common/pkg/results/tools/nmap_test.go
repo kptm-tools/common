@@ -16,22 +16,22 @@ func Test_GetSeverityCounts(t *testing.T) {
 			name: "Vulnerabilities with CVSS within range",
 			input: []Vulnerability{
 				{
-					ID:           "ID123",
+					CveID:        "ID123",
 					Type:         enums.WeaknessSSRF,
 					BaseSeverity: enums.SeverityTypeLow,
 				},
 				{
-					ID:           "ID123",
+					CveID:        "ID123",
 					Type:         enums.WeaknessBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeMedium,
 				},
 				{
-					ID:           "ID123",
+					CveID:        "ID123",
 					Type:         enums.WeaknessBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeCritical,
 				},
 				{
-					ID:           "ID123",
+					CveID:        "ID123",
 					Type:         enums.WeaknessBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeHigh,
 				},
@@ -47,27 +47,27 @@ func Test_GetSeverityCounts(t *testing.T) {
 			name: "Vulnerabilities with Unknown severities",
 			input: []Vulnerability{
 				{
-					ID:           "ID123",
+					CveID:        "ID123",
 					Type:         enums.WeaknessBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeLow,
 				},
 				{
-					ID:           "ID123",
+					CveID:        "ID123",
 					Type:         enums.WeaknessBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeMedium,
 				},
 				{
-					ID:           "ID123",
+					CveID:        "ID123",
 					Type:         enums.WeaknessInjection,
 					BaseSeverity: enums.SeverityTypeCritical,
 				},
 				{
-					ID:           "ID123",
+					CveID:        "ID123",
 					Type:         enums.WeaknessInjection,
 					BaseSeverity: enums.SeverityTypeUnknown,
 				},
 				{
-					ID:           "ID123",
+					CveID:        "ID123",
 					Type:         enums.WeaknessInjection,
 					BaseSeverity: enums.SeverityTypeUnknown,
 				},
@@ -123,7 +123,7 @@ func Test_TotalVulnerabilities(t *testing.T) {
 			input: NmapResult{
 				ScannedPorts: []PortData{
 					{ID: 80, Vulnerabilities: []Vulnerability{
-						{ID: "CVE-1234", BaseCVSSScore: 5.0},
+						{CveID: "CVE-1234", BaseCVSSScore: 5.0},
 					}},
 					{ID: 443, Vulnerabilities: []Vulnerability{}},
 				},
@@ -135,11 +135,11 @@ func Test_TotalVulnerabilities(t *testing.T) {
 			input: NmapResult{
 				ScannedPorts: []PortData{
 					{ID: 80, Vulnerabilities: []Vulnerability{
-						{ID: "CVE-1234", BaseCVSSScore: 5.0},
-						{ID: "CVE-5678", BaseCVSSScore: 7.5},
+						{CveID: "CVE-1234", BaseCVSSScore: 5.0},
+						{CveID: "CVE-5678", BaseCVSSScore: 7.5},
 					}},
 					{ID: 443, Vulnerabilities: []Vulnerability{
-						{ID: "CVE-91011", BaseCVSSScore: 9.8},
+						{CveID: "CVE-91011", BaseCVSSScore: 9.8},
 					}},
 				},
 			},
