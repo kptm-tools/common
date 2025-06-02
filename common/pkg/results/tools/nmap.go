@@ -51,7 +51,7 @@ type Service struct {
 }
 
 type CVSSMetric struct {
-	Version             string
+	Version             enums.CVSSVersion
 	BaseScore           float64
 	ImpactScore         float64
 	Severity            enums.SeverityType
