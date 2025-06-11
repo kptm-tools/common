@@ -58,17 +58,17 @@ func Test_GetSeverityCounts(t *testing.T) {
 				},
 				{
 					CveID:        "ID123",
-					Type:         enums.OwaspCategoryBrokenAccessControl,
+					Type:         enums.OwaspCategoryInjection,
 					BaseSeverity: enums.SeverityTypeCritical,
 				},
 				{
 					CveID:        "ID123",
-					Type:         enums.OwaspCategoryBrokenAccessControl,
+					Type:         enums.OwaspCategoryInjection,
 					BaseSeverity: enums.SeverityTypeUnknown,
 				},
 				{
 					CveID:        "ID123",
-					Type:         enums.OwaspCategoryBrokenAccessControl,
+					Type:         enums.OwaspCategoryInjection,
 					BaseSeverity: enums.SeverityTypeUnknown,
 				},
 			},
