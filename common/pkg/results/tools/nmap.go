@@ -70,13 +70,13 @@ type Vulnerability struct {
 	ScanID uuid.UUID `json:"scan_id"`
 	CveID  string    `json:"cve_id"`
 
-	Type          enums.WeaknessType `json:"type"` // CWE
+	Type          enums.WeaknessType `json:"type"`
 	BaseCVSSScore float64            `json:"cvss"`
 	References    []string           `json:"reference"`
 
 	Metrics []CVSSMetric `json:"metrics"`
 
-	CWEs []CWE `json:"cwe"` // CWE
+	CWERemediation *CWERemediation `json:"remediation"`
 
 	Description        string                       `json:"description,omitempty"`
 	Access             enums.AccessType             `json:"access,omitempty"`
@@ -123,7 +123,7 @@ type SeverityCounts struct {
 	Unknown  int `json:"unknown"`
 }
 
-type CWE struct {
+type CWERemediation struct {
 	ID          string    `json:"cwe_id"`
 	Title       string    `json:"title"`
 	Phase       string    `json:"phase"`
