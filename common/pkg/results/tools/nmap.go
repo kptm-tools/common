@@ -70,9 +70,9 @@ type Vulnerability struct {
 	ScanID uuid.UUID `json:"scan_id"`
 	CveID  string    `json:"cve_id"`
 
-	Type          enums.WeaknessType `json:"type"`
-	BaseCVSSScore float64            `json:"cvss"`
-	References    []string           `json:"reference"`
+	Type          enums.OwaspCategory `json:"type"`
+	BaseCVSSScore float64             `json:"cvss"`
+	References    []string            `json:"reference"`
 
 	Metrics []CVSSMetric `json:"metrics"`
 
@@ -178,8 +178,8 @@ func (r *NmapResult) TotalVulnerabilities() int {
 	return len(r.GetAllVulnerabilities())
 }
 
-func (r *NmapResult) GetSeverityPerTypeMap() map[enums.WeaknessType]int {
-	severityMap := make(map[enums.WeaknessType]int)
+func (r *NmapResult) GetSeverityPerTypeMap() map[enums.OwaspCategory]int {
+	severityMap := make(map[enums.OwaspCategory]int)
 
 	for _, port := range r.ScannedPorts {
 		for _, vuln := range port.Vulnerabilities {
