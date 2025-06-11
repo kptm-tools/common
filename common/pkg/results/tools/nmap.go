@@ -70,11 +70,13 @@ type Vulnerability struct {
 	ScanID uuid.UUID `json:"scan_id"`
 	CveID  string    `json:"cve_id"`
 
-	Type          enums.WeaknessType `json:"type"`
+	Type          enums.WeaknessType `json:"type"` // CWE
 	BaseCVSSScore float64            `json:"cvss"`
 	References    []string           `json:"reference"`
 
 	Metrics []CVSSMetric `json:"metrics"`
+
+	CWEs []CWE `json:"cwe"` // CWE
 
 	Description        string                       `json:"description,omitempty"`
 	Access             enums.AccessType             `json:"access,omitempty"`
@@ -119,6 +121,14 @@ type SeverityCounts struct {
 	Low      int `json:"low"`
 	None     int `json:"none"`
 	Unknown  int `json:"unknown"`
+}
+
+type CWE struct {
+	ID          string    `json:"cwe_id"`
+	Title       string    `json:"title"`
+	Phase       string    `json:"phase"`
+	Description string    `json:"description"`
+	LastUpdated time.Time `json:"last_updated"`
 }
 
 // ScannedPortsSummary returns a concise summary of the NmapResult for logging purposes.
