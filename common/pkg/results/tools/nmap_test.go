@@ -17,22 +17,22 @@ func Test_GetSeverityCounts(t *testing.T) {
 			input: []Vulnerability{
 				{
 					CveID:        "ID123",
-					Type:         enums.WeaknessSSRF,
+					Type:         enums.OwaspCategorySSRF,
 					BaseSeverity: enums.SeverityTypeLow,
 				},
 				{
 					CveID:        "ID123",
-					Type:         enums.WeaknessBrokenAccessControl,
+					Type:         enums.OwaspCategoryBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeMedium,
 				},
 				{
 					CveID:        "ID123",
-					Type:         enums.WeaknessBrokenAccessControl,
+					Type:         enums.OwaspCategoryBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeCritical,
 				},
 				{
 					CveID:        "ID123",
-					Type:         enums.WeaknessBrokenAccessControl,
+					Type:         enums.OwaspCategoryBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeHigh,
 				},
 			},
@@ -48,27 +48,27 @@ func Test_GetSeverityCounts(t *testing.T) {
 			input: []Vulnerability{
 				{
 					CveID:        "ID123",
-					Type:         enums.WeaknessBrokenAccessControl,
+					Type:         enums.OwaspCategoryBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeLow,
 				},
 				{
 					CveID:        "ID123",
-					Type:         enums.WeaknessBrokenAccessControl,
+					Type:         enums.OwaspCategoryBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeMedium,
 				},
 				{
 					CveID:        "ID123",
-					Type:         enums.WeaknessInjection,
+					Type:         enums.OwaspCategoryBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeCritical,
 				},
 				{
 					CveID:        "ID123",
-					Type:         enums.WeaknessInjection,
+					Type:         enums.OwaspCategoryBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeUnknown,
 				},
 				{
 					CveID:        "ID123",
-					Type:         enums.WeaknessInjection,
+					Type:         enums.OwaspCategoryBrokenAccessControl,
 					BaseSeverity: enums.SeverityTypeUnknown,
 				},
 			},
@@ -168,21 +168,21 @@ func TestGetSeverityPerTypeMap(t *testing.T) {
 	result := NmapResult{
 		ScannedPorts: []PortData{
 			{Vulnerabilities: []Vulnerability{
-				{Type: enums.WeaknessInjection, BaseCVSSScore: 5.0},
-				{Type: enums.WeaknessSecurityLoggingAndMonitoringFailures, BaseCVSSScore: 3.0},
-				{Type: enums.WeaknessBrokenAccessControl, BaseCVSSScore: 9.5}, // Higher severity for Tipo A
+				{Type: enums.OwaspCategoryInjection, BaseCVSSScore: 5.0},
+				{Type: enums.OwaspCategorySecurityLoggingAndMonitoringFailures, BaseCVSSScore: 3.0},
+				{Type: enums.OwaspCategoryBrokenAccessControl, BaseCVSSScore: 9.5}, // Higher severity for Tipo A
 			}},
 			{Vulnerabilities: []Vulnerability{
-				{Type: enums.WeaknessBrokenAccessControl, BaseCVSSScore: 4.0},
-				{Type: enums.WeaknessInjection, BaseCVSSScore: 7.0}, // Higher severity for Tipo B
+				{Type: enums.OwaspCategoryBrokenAccessControl, BaseCVSSScore: 4.0},
+				{Type: enums.OwaspCategoryInjection, BaseCVSSScore: 7.0}, // Higher severity for Tipo B
 			}},
 		},
 	}
 
-	expected := map[enums.WeaknessType]int{
-		enums.WeaknessBrokenAccessControl:                  SeverityCritical,
-		enums.WeaknessInjection:                            SeverityHigh,
-		enums.WeaknessSecurityLoggingAndMonitoringFailures: SeverityLow,
+	expected := map[enums.OwaspCategory]int{
+		enums.OwaspCategoryBrokenAccessControl:                  SeverityCritical,
+		enums.OwaspCategoryInjection:                            SeverityHigh,
+		enums.OwaspCategorySecurityLoggingAndMonitoringFailures: SeverityLow,
 	}
 
 	actual := result.GetSeverityPerTypeMap()
