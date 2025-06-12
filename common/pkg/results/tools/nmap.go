@@ -76,7 +76,7 @@ type Vulnerability struct {
 
 	Metrics []CVSSMetric `json:"metrics"`
 
-	CWERemediation *[]CWERemediation `json:"remediation"`
+	CWERemediation []CWERemediation `json:"remediation"`
 
 	Description        string                       `json:"description,omitempty"`
 	Access             enums.AccessType             `json:"access,omitempty"`
@@ -125,7 +125,7 @@ type SeverityCounts struct {
 
 type CWERemediation struct {
 	ID                 string    `json:"cwe_id"`
-	MitigationID      string    `json:"mitigation_id"`
+	MitigationID       string    `json:"mitigation_id"`
 	Title              string    `json:"title"`
 	Phase              []string  `json:"phase"`
 	Description        string    `json:"description"`
