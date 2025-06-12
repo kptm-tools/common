@@ -76,6 +76,8 @@ type Vulnerability struct {
 
 	Metrics []CVSSMetric `json:"metrics"`
 
+	CWERemediation *[]CWERemediation `json:"remediation"`
+
 	Description        string                       `json:"description,omitempty"`
 	Access             enums.AccessType             `json:"access,omitempty"`
 	Complexity         enums.ComplexityType         `json:"complexity,omitempty"`
@@ -119,6 +121,17 @@ type SeverityCounts struct {
 	Low      int `json:"low"`
 	None     int `json:"none"`
 	Unknown  int `json:"unknown"`
+}
+
+type CWERemediation struct {
+	ID                 string    `json:"cwe_id"`
+	MitigationID      string    `json:"mitigation_id"`
+	Title              string    `json:"title"`
+	Phase              []string  `json:"phase"`
+	Description        string    `json:"description"`
+	Effectiveness      string    `json:"effectiveness"`
+	EffectivenessNotes string    `json:"effectiveness_notes"`
+	LastUpdated        time.Time `json:"last_updated"`
 }
 
 // ScannedPortsSummary returns a concise summary of the NmapResult for logging purposes.
