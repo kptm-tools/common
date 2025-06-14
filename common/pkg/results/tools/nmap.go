@@ -69,6 +69,7 @@ type Vulnerability struct {
 	HostID uuid.UUID `json:"host_id"`
 	ScanID uuid.UUID `json:"scan_id"`
 	CveID  string    `json:"cve_id"`
+	CweID  string    `json:"cwe_id"`
 
 	Type          enums.OwaspCategory `json:"type"`
 	BaseCVSSScore float64             `json:"cvss"`
