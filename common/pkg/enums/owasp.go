@@ -62,8 +62,13 @@ func (w OwaspCategory) String() string {
 // GetOwaspCategoryForCWE finds the OWASP Top 10 category for a given CWE ID string (e.g., "CWE-719").
 // It returns the specific category or GetOwaspCategoryOther if it's not part of the Top 10 list.
 func GetOwaspCategoryForCWE(cweID string) OwaspCategory {
-	numStr := strings.TrimPrefix(strings.ToUpper(cweID), "CWE-")
-	id, err := strconv.Atoi(numStr)
+	cweSuffix := strings.TrimPrefix(strings.ToUpper(cweID), "CWE-")
+	// First check if it's a 'Other' Weakness
+	if cweSuffix == "Other" {
+		return OwaspCategoryOther
+	}
+
+	id, err := strconv.Atoi(cweSuffix)
 	if err != nil {
 		// Invalid
 		return OwaspCategoryNoInfo
