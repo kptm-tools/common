@@ -13,17 +13,23 @@ const (
 type RiskCodeType string
 
 const (
-	RiskCodeInformational RiskCodeType = "0"
-	RiskCodeLow           RiskCodeType = "1"
-	RiskCodeMedium        RiskCodeType = "2"
-	RiskCodeHigh          RiskCodeType = "3"
+	RiskCodeInformational RiskCodeType = "Informational"
+	RiskCodeLow           RiskCodeType = "Low"
+	RiskCodeMedium        RiskCodeType = "Medium"
+	RiskCodeHigh          RiskCodeType = "High"
 )
+
+func (r RiskCodeType) String() string {
+	return string(r)
+}
 
 type ConfidenceWebScanType string
 
 const (
-	ConfidenceFalsePositive ConfidenceWebScanType = "0"
-	ConfidenceLow           ConfidenceWebScanType = "1"
-	ConfidenceMedium        ConfidenceWebScanType = "2"
-	ConfidenceHigh          ConfidenceWebScanType = "3"
+	ConfidenceFalsePositive ConfidenceWebScanType = "FalsePositive"
+	ConfidenceLow           ConfidenceWebScanType = "Low"
+	ConfidenceMedium        ConfidenceWebScanType = "Medium"
+	ConfidenceHigh          ConfidenceWebScanType = "High"
 )
+
+func (c ConfidenceWebScanType) String() string { return string(c) }
