@@ -11,6 +11,7 @@ const (
 	ToolHarvester ToolName = "Harvester"
 	ToolDNSLookup ToolName = "DNSLookup"
 	ToolNmap      ToolName = "Nmap"
+	ToolWebScan   ToolName = "WebScan"
 )
 
 var ToolSubjectMap = map[ToolName]EventSubjectName{
@@ -18,6 +19,7 @@ var ToolSubjectMap = map[ToolName]EventSubjectName{
 	ToolHarvester: HarvesterEventSubject,
 	ToolDNSLookup: DNSLookupEventSubject,
 	ToolNmap:      NmapEventSubject,
+	ToolWebScan:   WebScanEventSubject,
 }
 
 func (t ToolName) String() string {

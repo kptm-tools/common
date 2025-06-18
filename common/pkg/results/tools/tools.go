@@ -80,6 +80,12 @@ func (r *ToolResult) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("failed to unmarshal NmapResult: %w", err)
 		}
 		r.Result = &nmapResult
+	case enums.ToolWebScan:
+		var webScanResult WebScanResult
+		if err := json.Unmarshal(aux.Result, &webScanResult); err != nil {
+			return fmt.Errorf("failed to unmarshal WebScanResult: %w", err)
+		}
+		r.Result = &webScanResult
 	default:
 		return fmt.Errorf("unsupported tool name: %s", r.Tool)
 	}
