@@ -10,4 +10,5 @@ const (
 	DNSLookupEventSubject     EventSubjectName = "event.dnslookup"
 	HarvesterEventSubject     EventSubjectName = "event.harvester"
 	NmapEventSubject          EventSubjectName = "event.nmap"
+	WebScanEventSubject       EventSubjectName = "event.webscan"
 )
